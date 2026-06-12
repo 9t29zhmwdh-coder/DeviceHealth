@@ -1,0 +1,14 @@
+[package]
+name    = "dh-cli"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "devicehealth"
+path = "src/main.rs"
+
+[dependencies]
+dh-core.path         = "../dh-core"
+tokio.workspace      = true
+anyhow.workspace     = true
+serde_json.workspace = true
