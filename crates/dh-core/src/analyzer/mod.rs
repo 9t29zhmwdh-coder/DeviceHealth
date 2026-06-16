@@ -46,7 +46,7 @@ pub fn run_full_analysis(settings: &AppSettings) -> AnalysisResult {
     findings.extend(security::detect_security_findings(&processes, &hw_system));
     findings.extend(services::detect_autostart_findings());
 
-    findings.sort_by(|a, b| b.severity.score_penalty().cmp(&a.severity.score_penalty()));
+    findings.sort_by_key(|f| std::cmp::Reverse(f.severity.score_penalty()));
 
     let cpu = hw_system.cpu_usage_global;
     let mem_pct = hw_system.memory_used_pct();
