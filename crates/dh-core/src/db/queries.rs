@@ -11,15 +11,23 @@ use crate::models::{
 pub async fn insert_snapshot(pool: &SqlitePool, s: &HealthSnapshot) -> Result<()> {
     let grade = format!("{:?}", s.grade);
     let ts = s.timestamp.timestamp();
+    let score = s.score as i64;
+    let process_count = s.process_count as i64;
+    let critical = s.finding_counts.critical as i64;
+    let high = s.finding_counts.high as i64;
+    let medium = s.finding_counts.medium as i64;
+    let low = s.finding_counts.low as i64;
+    let info = s.finding_counts.info as i64;
+    let uptime = s.uptime_seconds as i64;
     sqlx::query!(
         "INSERT OR REPLACE INTO health_snapshots(id, score, grade, cpu_usage, memory_used_pct,
          process_count, critical, high, medium, low, info, uptime_seconds, timestamp_ts)
          VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        s.id, s.score as i64, grade, s.cpu_usage, s.memory_used_pct,
-        s.process_count as i64,
-        s.finding_counts.critical as i64, s.finding_counts.high as i64,
-        s.finding_counts.medium as i64, s.finding_counts.low as i64,
-        s.finding_counts.info as i64, s.uptime_seconds as i64, ts
+        s.id, score, grade, s.cpu_usage, s.memory_used_pct,
+        process_count,
+        critical, high,
+        medium, low,
+        info, uptime, ts
     )
     .execute(pool)
     .await?;
@@ -46,11 +54,11 @@ pub async fn get_snapshots(pool: &SqlitePool, days: u32) -> Result<Vec<HealthSna
             _           => HealthGrade::Critical,
         };
         Some(HealthSnapshot {
-            id: r.id,
+            id: r.id.unwrap_or_default(),
             score: r.score as u8,
             grade,
-            cpu_usage: r.cpu_usage,
-            memory_used_pct: r.memory_used_pct,
+            cpu_usage: r.cpu_usage as f32,
+            memory_used_pct: r.memory_used_pct as f32,
             process_count: r.process_count as u32,
             finding_counts: FindingCounts {
                 critical: r.critical as u32,
@@ -99,7 +107,7 @@ pub async fn get_findings_for_snapshot(pool: &SqlitePool, snapshot_id: &str) -> 
             _          => Severity::Info,
         };
         Some(Finding {
-            id: r.id,
+            id: r.id.unwrap_or_default(),
             kind: FindingKind::SecurityRisk,
             severity,
             title: r.title,
