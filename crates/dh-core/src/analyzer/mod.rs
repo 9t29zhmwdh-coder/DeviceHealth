@@ -37,7 +37,7 @@ pub fn run_full_analysis(settings: &AppSettings) -> AnalysisResult {
     let hw_temps: Vec<ThermalInfo> = components.list().iter().map(hardware::build_thermal_info).collect();
     let hw_network: Vec<NetworkStat> = networks.iter().map(|(name, data)| hardware::build_network_stat(name, data)).collect();
 
-    let mut processes = processes::analyze_processes(&sys, settings);
+    let processes = processes::analyze_processes(&sys, settings);
     let mut findings = Vec::new();
 
     findings.extend(processes::detect_process_findings(&processes, settings));
