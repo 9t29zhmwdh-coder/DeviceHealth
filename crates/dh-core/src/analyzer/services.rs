@@ -121,6 +121,7 @@ fn classify_autostart_risk(name: &str) -> RiskLevel {
     RiskLevel::Unknown
 }
 
+#[allow(dead_code)]
 fn is_critical_service(name: &str) -> bool {
     let n = name.to_lowercase();
     matches!(n.as_str(),
