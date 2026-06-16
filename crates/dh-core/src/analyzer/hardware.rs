@@ -44,14 +44,14 @@ pub fn build_disk_info(disk: &Disk) -> DiskInfo {
         kind: kind.to_string(),
         total_bytes: disk.total_space(),
         available_bytes: disk.available_space(),
-        file_system: String::from_utf8_lossy(disk.file_system()).to_string(),
+        file_system: disk.file_system().to_string_lossy().to_string(),
     }
 }
 
 pub fn build_thermal_info(comp: &sysinfo::Component) -> ThermalInfo {
     ThermalInfo {
         label: comp.label().to_string(),
-        temperature_celsius: comp.temperature(),
+        temperature_celsius: comp.temperature().unwrap_or(0.0),
         critical_threshold: comp.critical(),
     }
 }
