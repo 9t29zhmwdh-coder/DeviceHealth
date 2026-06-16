@@ -16,8 +16,8 @@ pub fn build_system_info(sys: &System) -> SystemInfo {
 
     SystemInfo {
         os_name: System::name().unwrap_or_else(|| "Unbekannt".to_string()),
-        os_version: System::os_version().unwrap_or_else(|| "".to_string()),
-        hostname: System::host_name().unwrap_or_else(|| "".to_string()),
+        os_version: System::os_version().unwrap_or_default(),
+        hostname: System::host_name().unwrap_or_default(),
         cpu_brand,
         cpu_cores: sys.cpus().len(),
         cpu_freq_mhz: cpu_freq,
