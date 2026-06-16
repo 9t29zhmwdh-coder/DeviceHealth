@@ -109,5 +109,5 @@ pub fn calculate_health_score(
     else if uptime_days > 14 { score -= 6; }
     else if uptime_days > 7  { score -= 3; }
 
-    score.max(0).min(100) as u8
+    score.clamp(0, 100) as u8
 }
