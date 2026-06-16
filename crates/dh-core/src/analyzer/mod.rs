@@ -5,12 +5,11 @@ pub mod processes;
 pub mod security;
 pub mod services;
 
-use anyhow::Result;
 use sysinfo::{Components, Disks, Networks, System};
 
 use crate::models::{
     finding::Finding,
-    hardware::{DiskInfo, HardwareReport, NetworkStat, SystemInfo, ThermalInfo},
+    hardware::{DiskInfo, HardwareReport, NetworkStat, ThermalInfo},
     health::{FindingCounts, HealthGrade, HealthSnapshot, calculate_health_score},
     process::ProcessEntry,
     recommendation::Recommendation,
