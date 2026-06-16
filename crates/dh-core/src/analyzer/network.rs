@@ -4,6 +4,7 @@ use crate::models::{
     process::ProcessEntry,
 };
 
+#[allow(dead_code)]
 const KNOWN_TELEMETRY_PROCESSES: &[&str] = &[
     "CompatTelRunner", "DiagTrack", "dmwappushservice",
     "analyticspanetool", "coreduetd", "GoogleCrashHandler",
