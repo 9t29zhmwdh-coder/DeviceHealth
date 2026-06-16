@@ -10,7 +10,7 @@ pub fn analyze_processes(sys: &System, settings: &AppSettings) -> Vec<ProcessEnt
     sys.processes()
         .iter()
         .map(|(pid, proc)| {
-            let name = proc.name().to_string();
+            let name = proc.name().to_string_lossy().to_string();
             let is_zombie = matches!(proc.status(), ProcessStatus::Zombie);
 
             let known = known_processes::lookup(&name);
