@@ -1,0 +1,45 @@
+# Roadmap — DeviceHealth
+
+## v0.1.0 — Initial Release (2026-06-12) ✅
+
+- Process analysis: running processes with CPU and memory usage per process
+- Hardware analysis: CPU, RAM, disk, temperatures via sysinfo
+- Security analysis: open ports, suspicious processes, basic firewall check
+- Service analysis: system services and daemon status, startup items
+- HealthScore 0–100 with per-category subscores (performance, security, stability, storage)
+- AI explanations and optimization recommendations via Ollama
+- `dh-core` Rust crate with modular analyzer architecture
+- `dh-cli` binary for headless diagnostics
+- Tauri v2 desktop shell (macOS, Windows, Linux)
+- React/TypeScript frontend with score dial and process/hardware panels
+
+## v0.2.0 — History & Alerts
+
+- Persistent scan history (SQLite) for trend tracking
+- Configurable alert thresholds (CPU%, RAM%, disk space, temperature)
+- Background monitoring mode with system tray integration
+- Score history chart (last 7 / 30 days)
+- Export diagnostic report (JSON, plain text, PDF)
+
+## v0.3.0 — Deep Diagnostics
+
+- Startup impact analysis (boot-time contribution per service/app)
+- Disk health via S.M.A.R.T. data (where OS supports it)
+- Network activity per process (bandwidth usage)
+- AI-generated prioritized action list ("fix these 3 things first")
+- Scheduled periodic scans
+
+## v1.0.0 — Stable Release
+
+- Stable public API for `dh-core` (semver)
+- Full test coverage (unit + integration)
+- Packaged installers (`.dmg`, `.msi`, `.AppImage`)
+- Localization (EN + DE)
+- Comprehensive documentation site
+
+## Out of Scope
+
+- Remote monitoring of other machines (network agents)
+- Cloud-based diagnostics or telemetry upload
+- Kernel-level drivers or system modifications
+- Mobile platforms (iOS, Android)
