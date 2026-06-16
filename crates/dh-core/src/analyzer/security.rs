@@ -4,7 +4,7 @@ use crate::models::{
     process::{ProcessEntry, ProcessCategory, RiskLevel},
 };
 
-pub fn detect_security_findings(processes: &[ProcessEntry], sys: &SystemInfo) -> Vec<Finding> {
+pub fn detect_security_findings(processes: &[ProcessEntry], _sys: &SystemInfo) -> Vec<Finding> {
     let mut findings = Vec::new();
 
     let high_risk: Vec<&ProcessEntry> = processes.iter()
