@@ -10,6 +10,7 @@
 
 DeviceHealth analyzes all running processes, services, hardware components, and network activity on your machine, detects problems automatically, and provides plain-language AI explanations with concrete optimization recommendations — 100% locally, without any cloud connection.
 
+[![CI](https://github.com/9t29zhmwdh-coder/DeviceHealth/actions/workflows/ci.yml/badge.svg)](https://github.com/9t29zhmwdh-coder/DeviceHealth/actions/workflows/ci.yml)
 ![Rust](https://img.shields.io/badge/Rust-1.77+-orange?logo=rust)
 ![Tauri](https://img.shields.io/badge/Tauri-v2-blue?logo=tauri)
 ![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
