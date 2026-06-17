@@ -6,9 +6,9 @@
 
 [🇬🇧 English Version](README.md)
 
-**KI-gestützte Systemdiagnose und Gesundheitsüberwachung — vollständig offline, entwickelt mit Rust + Tauri.**
+**KI-gestützte Systemdiagnose und Gesundheitsüberwachung. Vollständig offline, entwickelt mit Rust und Tauri.**
 
-DeviceHealth analysiert alle laufenden Prozesse, Dienste, Hardware-Komponenten und Netzwerkaktivitäten auf deinem Gerät, erkennt Probleme automatisch und liefert Klartext-KI-Erklärungen mit konkreten Optimierungsempfehlungen — 100% lokal, ohne jegliche Cloud-Verbindung.
+DeviceHealth analysiert alle laufenden Prozesse, Dienste, Hardware-Komponenten und Netzwerkaktivitäten auf deinem Gerät, erkennt Probleme automatisch und liefert Klartext-KI-Erklärungen mit konkreten Optimierungsempfehlungen; 100% lokal, ohne jegliche Cloud-Verbindung.
 
 ![Rust](https://img.shields.io/badge/Rust-1.77+-orange?logo=rust)
 ![Tauri](https://img.shields.io/badge/Tauri-v2-blue?logo=tauri)
@@ -27,9 +27,9 @@ DeviceHealth analysiert alle laufenden Prozesse, Dienste, Hardware-Komponenten u
 | **Hardware-Monitor** | CPU, RAM, Festplattennutzung, Temperaturen, Netzwerk-I/O |
 | **Autostart-Erkennung** | Scannt LaunchAgents (macOS) und systemd-Units (Linux) auf unnötige Einträge |
 | **Sicherheitsbefunde** | Verdächtige Prozesse, offene Risiken, Treiberfehler, fehlende Updates |
-| **KI-Erklärungen** | Ollama erklärt jeden Prozess in Klartext — Ergebnisse lokal gecacht |
+| **KI-Erklärungen** | Ollama erklärt jeden Prozess in Klartext: Ergebnisse lokal gecacht |
 | **Verlauf** | Score-Trend und System-Snapshots über die Zeit mit Diagrammen |
-| **Empfehlungen** | Umsetzbare Vorschläge mit Risikolevel — Ein-Klick mit Bestätigung |
+| **Empfehlungen** | Umsetzbare Vorschläge mit Risikolevel: Ein-Klick mit Bestätigung |
 
 ---
 
@@ -60,7 +60,7 @@ cargo tauri dev
 
 ## Datenschutz
 
-DeviceHealth verarbeitet alle Systemdaten **lokal auf deinem Gerät**. Es werden keine Daten an externe Server gesendet. Ollama läuft vollständig offline — KI-Erklärungen verlassen dein Gerät nie.
+DeviceHealth verarbeitet alle Systemdaten **lokal auf deinem Gerät**. Es werden keine Daten an externe Server gesendet. Ollama läuft vollständig offline; KI-Erklärungen verlassen dein Gerät nie.
 
 ---
 
