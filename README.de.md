@@ -21,7 +21,7 @@ DeviceHealth analysiert alle laufenden Prozesse, Dienste, Hardware-Komponenten u
 
 | Funktion | Beschreibung |
 |---|---|
-| **Gesundheitsscore** | Numerische Bewertung 0–100 mit Note (Ausgezeichnet → Kritisch) |
+| **Gesundheitsscore** | Numerische Bewertung 0 bis 100 mit Note (Ausgezeichnet → Kritisch) |
 | **Prozess-Analyse** | Erkennt Bloatware, Telemetrie, Zombie-Prozesse, CPU-Spikes, RAM-Leaks |
 | **Befunde** | Kategorisierte Probleme (Kritisch / Hoch / Mittel / Niedrig / Info) mit Lösungsempfehlungen |
 | **Hardware-Monitor** | CPU, RAM, Festplattennutzung, Temperaturen, Netzwerk-I/O |
@@ -81,7 +81,7 @@ sysinfo ──► spawn_blocking ──► ProcessAnalyzer + HardwareAnalyzer
                                        │
                                SecurityAnalyzer + ServiceAnalyzer
                                        │
-                               HealthScore (0–100) + Befunde
+                               HealthScore (0 bis 100) + Befunde
                                        │
                                SQLite (Snapshots, KI-Cache)
 ```
