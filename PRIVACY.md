@@ -1,10 +1,10 @@
-# Privacy Policy — DeviceHealth
+# Privacy Policy : DeviceHealth
 
 ## Summary
 
 DeviceHealth processes all data locally. No data ever leaves your device.
 
-## What We Collect
+## What I Collect
 
 **Nothing.** DeviceHealth does not collect, store, transmit, or share any user data.
 
