@@ -85,4 +85,4 @@ sysinfo ──► spawn_blocking ──► ProcessAnalyzer + HardwareAnalyzer
 
 ---
 
-**Author:** [Rafael Yilmaz](https://github.com/9t29zhmwdh-coder) · **Status:** Active · ![version](https://img.shields.io/github/v/release/9t29zhmwdh-coder/DeviceHealth?label=\&color=6b7280\&style=flat-square) · **License:** MIT
+**Author:** [Rafael Yilmaz](https://github.com/9t29zhmwdh-coder) · **Status:** Active · ![version](https://img.shields.io/github/v/release/9t29zhmwdh-coder/DeviceHealth?color=6b7280&style=flat-square) · **License:** MIT
