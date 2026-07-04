@@ -65,10 +65,10 @@ DeviceHealth processes all system data **locally on your machine**. No data is s
 
 ```
 DeviceHealth/
-├── crates/dh-core/      — Rust: analyzer, hardware, process detection, DB
-├── crates/dh-cli/       — CLI binary
-├── src-tauri/           — Tauri v2 backend + IPC commands
-└── frontend/            — React + TypeScript + Tailwind + Recharts
+├── crates/dh-core/      # Rust: analyzer, hardware, process detection, DB
+├── crates/dh-cli/       # CLI binary
+├── src-tauri/           # Tauri v2 backend + IPC commands
+└── frontend/            # React + TypeScript + Tailwind + Recharts
 ```
 
 ### Analysis Pipeline
