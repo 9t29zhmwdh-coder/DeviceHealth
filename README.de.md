@@ -67,10 +67,10 @@ DeviceHealth verarbeitet alle Systemdaten **lokal auf deinem Gerät**. Es werden
 
 ```
 DeviceHealth/
-├── crates/dh-core/      — Rust: Analyzer, Hardware, Prozess-Erkennung, DB
-├── crates/dh-cli/       — CLI-Binary
-├── src-tauri/           — Tauri v2 Backend + IPC-Commands
-└── frontend/            — React + TypeScript + Tailwind + Recharts
+├── crates/dh-core/      # Rust: Analyzer, Hardware, Prozess-Erkennung, DB
+├── crates/dh-cli/       # CLI-Binary
+├── src-tauri/           # Tauri v2 Backend + IPC-Commands
+└── frontend/            # React + TypeScript + Tailwind + Recharts
 ```
 
 ### Analyse-Pipeline
