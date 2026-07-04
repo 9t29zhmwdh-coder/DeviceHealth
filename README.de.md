@@ -6,7 +6,7 @@
 
 [🇬🇧 English Version](README.md)
 
-**KI-gestützte Systemdiagnose und Gesundheitsüberwachung. Vollständig offline, entwickelt mit Rust und Tauri.**
+**KI-gestützte Systemdiagnose und Gesundheitsüberwachung. Bewusst offline, deine Systemdaten bleiben auf dem Gerät. Entwickelt mit Rust und Tauri.**
 
 DeviceHealth analysiert alle laufenden Prozesse, Dienste, Hardware-Komponenten und Netzwerkaktivitäten auf deinem Gerät, erkennt Probleme automatisch und liefert Klartext-KI-Erklärungen mit konkreten Optimierungsempfehlungen; 100% lokal, ohne jegliche Cloud-Verbindung.
 

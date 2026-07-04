@@ -6,7 +6,7 @@
 
 [🇩🇪 Deutsche Version](README.de.md)
 
-**AI-powered system diagnostics and health monitoring. Fully offline, built with Rust and Tauri.**
+**AI-powered system diagnostics and health monitoring. Offline by design, your system data stays on the device. Built with Rust and Tauri.**
 
 DeviceHealth analyzes all running processes, services, hardware components, and network activity on your machine, detects problems automatically, and provides plain-language AI explanations with concrete optimization recommendations; 100% locally, without any cloud connection.
 
