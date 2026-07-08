@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAnalysisStore } from './stores/analysisStore'
 import { useSettingsStore } from './stores/settingsStore'
 import { api, events } from './lib/tauri'
+import { useT, useLangStore } from './lib/i18n'
 import { Dashboard } from './components/Dashboard/Dashboard'
 import { ProcessList } from './components/ProcessList/ProcessList'
 import { FindingsView } from './components/Findings/FindingsView'
@@ -15,6 +16,8 @@ export default function App() {
   const [tab, setTab] = useState<Tab>('dashboard')
   const { setRunning, setSnapshot, setOllamaOnline, loadAll, loadHistory, findings } = useAnalysisStore()
   const { load: loadSettings } = useSettingsStore()
+  const t = useT()
+  const { lang, toggle } = useLangStore()
 
   useEffect(() => {
     loadSettings()
@@ -64,13 +67,19 @@ export default function App() {
           </div>
         </div>
         <nav className="flex-1 p-2 space-y-0.5">
-          {nav('dashboard', '📊', 'Übersicht')}
-          {nav('findings', '🔍', 'Befunde', criticalCount)}
-          {nav('processes', '⚙️', 'Prozesse')}
-          {nav('hardware', '💾', 'Hardware')}
-          {nav('history', '📈', 'Verlauf')}
-          {nav('settings', '⚙️', 'Einstellungen')}
+          {nav('dashboard', '📊', t('nav.dashboard'))}
+          {nav('findings', '🔍', t('nav.findings'), criticalCount)}
+          {nav('processes', '⚙️', t('nav.processes'))}
+          {nav('hardware', '💾', t('nav.hardware'))}
+          {nav('history', '📈', t('nav.history'))}
+          {nav('settings', '⚙️', t('nav.settings'))}
         </nav>
+        <button
+          onClick={toggle}
+          className="m-2 px-2 py-1.5 text-xs text-[#8b949e] hover:text-[#e6edf3] border border-[#30363d] rounded-md transition-colors"
+        >
+          {lang === 'en' ? 'DE' : 'EN'}
+        </button>
       </div>
 
       {/* Main */}

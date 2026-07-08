@@ -1,17 +1,19 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 import { useAnalysisStore } from '../../stores/analysisStore'
 import { gradeColor, gradeLabel, type HealthSnapshot } from '../../lib/tauri'
+import { useT, dateLocale } from '../../lib/i18n'
 
 export function HistoryView() {
   const { history } = useAnalysisStore()
+  const t = useT()
 
   if (history.length === 0) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
           <div className="text-4xl mb-2">📈</div>
-          <div className="text-[#8b949e] text-sm">Noch keine Analysedaten vorhanden</div>
-          <div className="text-xs text-[#8b949e] mt-1">Führe mehrere Analysen durch, um den Verlauf zu sehen</div>
+          <div className="text-[#8b949e] text-sm">{t('history.noDataYet')}</div>
+          <div className="text-xs text-[#8b949e] mt-1">{t('history.runMultiple')}</div>
         </div>
       </div>
     )
@@ -20,7 +22,7 @@ export function HistoryView() {
   const chartData = [...history]
     .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
     .map(s => ({
-      time: new Date(s.timestamp).toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
+      time: new Date(s.timestamp).toLocaleDateString(dateLocale(), { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
       score: s.score,
       cpu: Math.round(s.cpu_usage),
       mem: Math.round(s.memory_used_pct),
@@ -29,7 +31,7 @@ export function HistoryView() {
   return (
     <div className="h-full overflow-y-auto p-6 space-y-6">
       <section>
-        <h2 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">Score-Verlauf</h2>
+        <h2 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">{t('history.scoreHistory')}</h2>
         <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4">
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={chartData}>
@@ -67,7 +69,7 @@ export function HistoryView() {
       </section>
 
       <section>
-        <h2 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">Alle Snapshots ({history.length})</h2>
+        <h2 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">{t('history.allSnapshots')} ({history.length})</h2>
         <div className="space-y-2">
           {[...history]
             .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
@@ -79,6 +81,7 @@ export function HistoryView() {
 }
 
 function SnapshotRow({ snapshot: s }: { snapshot: HealthSnapshot }) {
+  const t = useT()
   const color = gradeColor(s.grade)
   const total = s.finding_counts.critical + s.finding_counts.high + s.finding_counts.medium
   return (
@@ -90,10 +93,10 @@ function SnapshotRow({ snapshot: s }: { snapshot: HealthSnapshot }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="text-xs font-medium" style={{ color }}>{gradeLabel(s.grade)}</span>
-          <span className="text-xs text-[#8b949e]">{new Date(s.timestamp).toLocaleString('de-CH')}</span>
+          <span className="text-xs text-[#8b949e]">{new Date(s.timestamp).toLocaleString(dateLocale())}</span>
         </div>
         <div className="text-xs text-[#8b949e] mt-0.5">
-          {s.process_count} Prozesse · {total} Befunde · CPU {s.cpu_usage.toFixed(0)}% · RAM {s.memory_used_pct.toFixed(0)}%
+          {s.process_count} {t('history.processesUnit')} · {total} {t('history.findingsUnit')} · CPU {s.cpu_usage.toFixed(0)}% · RAM {s.memory_used_pct.toFixed(0)}%
         </div>
       </div>
     </div>

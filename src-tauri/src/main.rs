@@ -14,7 +14,6 @@ async fn main() {
         .unwrap_or_default();
 
     tauri::Builder::default()
-        .plugin(tauri_plugin_shell::init())
         .manage(AppState::new(pool, settings))
         .invoke_handler(tauri::generate_handler![
             commands::analysis::run_analysis,

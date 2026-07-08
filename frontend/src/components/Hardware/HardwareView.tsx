@@ -1,15 +1,17 @@
 import { useAnalysisStore } from '../../stores/analysisStore'
 import { formatBytes } from '../../lib/tauri'
+import { useT } from '../../lib/i18n'
 
 export function HardwareView() {
   const { hardware } = useAnalysisStore()
+  const t = useT()
 
   if (!hardware) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
           <div className="text-4xl mb-2">💾</div>
-          <div className="text-[#8b949e] text-sm">Noch keine Analyse durchgeführt</div>
+          <div className="text-[#8b949e] text-sm">{t('hardware.noAnalysisYet')}</div>
         </div>
       </div>
     )
@@ -25,20 +27,20 @@ export function HardwareView() {
     <div className="h-full overflow-y-auto p-6 space-y-6">
       {/* System */}
       <section>
-        <h2 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">System</h2>
+        <h2 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">{t('hardware.system')}</h2>
         <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4 grid grid-cols-2 gap-x-8 gap-y-3">
-          <InfoRow label="Betriebssystem" value={`${sys.os_name} ${sys.os_version}`} />
-          <InfoRow label="Hostname" value={sys.hostname} />
-          <InfoRow label="CPU" value={sys.cpu_brand} />
-          <InfoRow label="CPU-Kerne" value={String(sys.cpu_cores)} />
-          <InfoRow label="CPU-Takt" value={`${(sys.cpu_freq_mhz / 1000).toFixed(2)} GHz`} />
-          <InfoRow label="CPU-Auslastung" value={`${sys.cpu_usage_global.toFixed(1)}%`} />
+          <InfoRow label={t('hardware.os')} value={`${sys.os_name} ${sys.os_version}`} />
+          <InfoRow label={t('hardware.hostname')} value={sys.hostname} />
+          <InfoRow label={t('hardware.cpu')} value={sys.cpu_brand} />
+          <InfoRow label={t('hardware.cpuCores')} value={String(sys.cpu_cores)} />
+          <InfoRow label={t('hardware.cpuFreq')} value={`${(sys.cpu_freq_mhz / 1000).toFixed(2)} GHz`} />
+          <InfoRow label={t('hardware.cpuUsage')} value={`${sys.cpu_usage_global.toFixed(1)}%`} />
         </div>
       </section>
 
       {/* Memory */}
       <section>
-        <h2 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">Arbeitsspeicher</h2>
+        <h2 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">{t('hardware.memory')}</h2>
         <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4 space-y-4">
           <BarStat label="RAM" used={sys.used_memory_bytes} total={sys.total_memory_bytes} pct={memPct}
             color={memPct > 85 ? '#f0883e' : '#58a6ff'} />
@@ -52,7 +54,7 @@ export function HardwareView() {
       {/* Disks */}
       {hardware.disks.length > 0 && (
         <section>
-          <h2 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">Laufwerke</h2>
+          <h2 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">{t('hardware.disks')}</h2>
           <div className="space-y-2">
             {hardware.disks.map((d, i) => {
               const used = d.total_bytes - d.available_bytes
@@ -85,7 +87,7 @@ export function HardwareView() {
       {/* Temperatures */}
       {hardware.temperatures.length > 0 && (
         <section>
-          <h2 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">Temperaturen</h2>
+          <h2 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">{t('hardware.temperatures')}</h2>
           <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4 grid grid-cols-2 gap-3">
             {hardware.temperatures.map((t, i) => {
               const hot = t.temperature_celsius > (t.critical_threshold ?? 90)
@@ -106,20 +108,20 @@ export function HardwareView() {
       {/* Network */}
       {hardware.network.length > 0 && (
         <section>
-          <h2 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">Netzwerk</h2>
+          <h2 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-3">{t('hardware.network')}</h2>
           <div className="space-y-2">
             {hardware.network.filter(n => n.bytes_received + n.bytes_transmitted > 0).map((n, i) => (
               <div key={i} className="bg-[#161b22] border border-[#30363d] rounded-xl p-4 grid grid-cols-3 gap-4">
                 <div>
-                  <div className="text-xs text-[#8b949e] mb-1">Interface</div>
+                  <div className="text-xs text-[#8b949e] mb-1">{t('hardware.interface')}</div>
                   <div className="text-sm text-[#e6edf3]">{n.interface}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-[#8b949e] mb-1">Empfangen</div>
+                  <div className="text-xs text-[#8b949e] mb-1">{t('hardware.received')}</div>
                   <div className="text-sm text-[#3fb950]">↓ {formatBytes(n.bytes_received)}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-[#8b949e] mb-1">Gesendet</div>
+                  <div className="text-xs text-[#8b949e] mb-1">{t('hardware.sent')}</div>
                   <div className="text-sm text-[#58a6ff]">↑ {formatBytes(n.bytes_transmitted)}</div>
                 </div>
               </div>

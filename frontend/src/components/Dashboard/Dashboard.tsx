@@ -1,17 +1,20 @@
 import { RadialBarChart, RadialBar, ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts'
 import { useAnalysisStore } from '../../stores/analysisStore'
 import { api, gradeColor, gradeLabel, severityColor, uptimeHuman, formatBytes, type Severity } from '../../lib/tauri'
+import { useT, dateLocale } from '../../lib/i18n'
 
 type Tab = 'dashboard' | 'processes' | 'findings' | 'hardware' | 'history' | 'settings'
 interface Props { onNavigate: (tab: Tab) => void }
 
 const SEVERITY_ORDER: Severity[] = ['Critical', 'High', 'Medium', 'Low', 'Info']
-const SEVERITY_LABELS: Record<Severity, string> = {
-  Critical: 'Kritisch', High: 'Hoch', Medium: 'Mittel', Low: 'Niedrig', Info: 'Info',
-}
 
 export function Dashboard({ onNavigate }: Props) {
   const { snapshot, findings, running, setRunning, setSnapshot, loadAll, ollamaOnline, setOllamaOnline } = useAnalysisStore()
+  const t = useT()
+  const SEVERITY_LABELS: Record<Severity, string> = {
+    Critical: t('severity.Critical'), High: t('severity.High'), Medium: t('severity.Medium'),
+    Low: t('severity.Low'), Info: t('severity.Info'),
+  }
 
   const handleScan = async () => {
     setRunning(true)
@@ -44,17 +47,17 @@ export function Dashboard({ onNavigate }: Props) {
     <div className="h-full overflow-y-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-[#e6edf3]">Systemübersicht</h1>
+          <h1 className="text-xl font-semibold text-[#e6edf3]">{t('dashboard.title')}</h1>
           {snapshot && (
             <div className="text-xs text-[#8b949e] mt-0.5">
-              Letzte Analyse: {new Date(snapshot.timestamp).toLocaleString('de-CH')}
+              {t('dashboard.lastAnalysis')}: {new Date(snapshot.timestamp).toLocaleString(dateLocale())}
             </div>
           )}
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5">
             <div className={`w-1.5 h-1.5 rounded-full ${ollamaOnline ? 'bg-[#3fb950]' : 'bg-[#f85149]'}`} />
-            <span className="text-xs text-[#8b949e]">{ollamaOnline ? 'KI online' : 'KI offline'}</span>
+            <span className="text-xs text-[#8b949e]">{ollamaOnline ? t('dashboard.aiOnline') : t('dashboard.aiOffline')}</span>
           </div>
           <button
             onClick={handleScan}
@@ -62,9 +65,9 @@ export function Dashboard({ onNavigate }: Props) {
             className="px-4 py-2 text-sm bg-[#238636] hover:bg-[#2ea043] text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
           >
             {running ? (
-              <><span className="animate-spin">⟳</span> Analysiere…</>
+              <><span className="animate-spin">⟳</span> {t('dashboard.analyzing')}</>
             ) : (
-              '🔍 Systemanalyse starten'
+              `🔍 ${t('dashboard.startScan')}`
             )}
           </button>
         </div>
@@ -74,9 +77,9 @@ export function Dashboard({ onNavigate }: Props) {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <div className="text-5xl mb-3">🩺</div>
-            <div className="text-[#8b949e] text-sm mb-4">Noch keine Analyse durchgeführt</div>
+            <div className="text-[#8b949e] text-sm mb-4">{t('dashboard.noAnalysisYet')}</div>
             <button onClick={handleScan} className="px-6 py-2.5 bg-[#238636] hover:bg-[#2ea043] text-white rounded-lg transition-colors text-sm">
-              Jetzt analysieren
+              {t('dashboard.analyzeNow')}
             </button>
           </div>
         </div>
@@ -85,7 +88,7 @@ export function Dashboard({ onNavigate }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             {/* Health Score Gauge */}
             <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-6 flex flex-col items-center">
-              <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-4">Gesundheitsscore</h3>
+              <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-4">{t('dashboard.healthScore')}</h3>
               <div className="relative w-48 h-48">
                 <ResponsiveContainer width="100%" height="100%">
                   <RadialBarChart innerRadius="60%" outerRadius="90%" data={radialData} startAngle={180} endAngle={-180}>
@@ -101,23 +104,23 @@ export function Dashboard({ onNavigate }: Props) {
 
             {/* Stats */}
             <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-6">
-              <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-4">System</h3>
+              <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-4">{t('dashboard.system')}</h3>
               <div className="space-y-3">
                 <StatRow label="CPU" value={`${snapshot.cpu_usage.toFixed(1)}%`}
                   bar pct={snapshot.cpu_usage} color={snapshot.cpu_usage > 80 ? '#f85149' : '#3fb950'} />
                 <StatRow label="RAM" value={`${snapshot.memory_used_pct.toFixed(1)}%`}
                   bar pct={snapshot.memory_used_pct} color={snapshot.memory_used_pct > 85 ? '#f0883e' : '#58a6ff'} />
-                <StatRow label="Prozesse" value={String(snapshot.process_count)} />
-                <StatRow label="Betriebszeit" value={uptimeHuman(snapshot.uptime_seconds)} />
+                <StatRow label={t('dashboard.processesLabel')} value={String(snapshot.process_count)} />
+                <StatRow label={t('dashboard.uptime')} value={uptimeHuman(snapshot.uptime_seconds)} />
               </div>
             </div>
 
             {/* Findings summary */}
             <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-6">
-              <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-4">Befunde</h3>
+              <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider mb-4">{t('dashboard.findings')}</h3>
               {pieData.length === 0 ? (
                 <div className="flex items-center justify-center h-32 text-[#3fb950] text-sm">
-                  ✅ Keine Probleme gefunden
+                  ✅ {t('dashboard.noIssuesFound')}
                 </div>
               ) : (
                 <div className="flex items-center gap-4">
@@ -145,7 +148,7 @@ export function Dashboard({ onNavigate }: Props) {
                 onClick={() => onNavigate('findings')}
                 className="mt-3 w-full text-xs text-[#58a6ff] hover:underline text-left"
               >
-                Alle Befunde anzeigen →
+                {t('dashboard.viewAllFindings')} →
               </button>
             </div>
           </div>
@@ -153,7 +156,7 @@ export function Dashboard({ onNavigate }: Props) {
           {/* Top Findings */}
           {findings.filter(f => f.severity === 'Critical' || f.severity === 'High').length > 0 && (
             <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4 mb-6">
-              <h3 className="text-sm font-medium text-[#e6edf3] mb-3">🚨 Wichtige Befunde</h3>
+              <h3 className="text-sm font-medium text-[#e6edf3] mb-3">🚨 {t('dashboard.importantFindings')}</h3>
               <div className="space-y-2">
                 {findings
                   .filter(f => f.severity === 'Critical' || f.severity === 'High')
@@ -173,7 +176,7 @@ export function Dashboard({ onNavigate }: Props) {
                 onClick={() => onNavigate('findings')}
                 className="mt-3 text-xs text-[#58a6ff] hover:underline"
               >
-                Alle Befunde anzeigen →
+                {t('dashboard.viewAllFindings')} →
               </button>
             </div>
           )}
