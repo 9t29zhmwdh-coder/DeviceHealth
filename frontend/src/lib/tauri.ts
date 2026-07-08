@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/core'
 import { listen } from '@tauri-apps/api/event'
+import { t } from './i18n'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -138,10 +139,7 @@ export function gradeColor(g: HealthGrade): string {
 }
 
 export function gradeLabel(g: HealthGrade): string {
-  const m: Record<HealthGrade, string> = {
-    Excellent: 'Ausgezeichnet', Good: 'Gut', Fair: 'Akzeptabel', Poor: 'Schlecht', Critical: 'Kritisch',
-  }
-  return m[g]
+  return t(`grade.${g}`)
 }
 
 export function uptimeHuman(seconds: number): string {

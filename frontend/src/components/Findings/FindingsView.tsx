@@ -1,17 +1,20 @@
 import { useState } from 'react'
 import { useAnalysisStore } from '../../stores/analysisStore'
 import { severityColor, type Severity, type Finding } from '../../lib/tauri'
+import { useT, dateLocale } from '../../lib/i18n'
 
 const SEVERITIES: Severity[] = ['Critical', 'High', 'Medium', 'Low', 'Info']
-const SEV_LABELS: Record<Severity, string> = {
-  Critical: 'Kritisch', High: 'Hoch', Medium: 'Mittel', Low: 'Niedrig', Info: 'Info',
-}
 
 export function FindingsView() {
   const { findings } = useAnalysisStore()
   const [filter, setFilter] = useState<Severity | 'all'>('all')
   const [search, setSearch] = useState('')
   const [expanded, setExpanded] = useState<string | null>(null)
+  const t = useT()
+  const SEV_LABELS: Record<Severity, string> = {
+    Critical: t('severity.Critical'), High: t('severity.High'), Medium: t('severity.Medium'),
+    Low: t('severity.Low'), Info: t('severity.Info'),
+  }
 
   const q = search.toLowerCase()
   const filtered = findings.filter(f => {
@@ -30,7 +33,7 @@ export function FindingsView() {
         <div className="flex items-center gap-2 mb-3 flex-wrap">
           <button onClick={() => setFilter('all')}
             className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${filter === 'all' ? 'bg-[#30363d] text-[#e6edf3]' : 'text-[#8b949e] hover:text-[#e6edf3]'}`}>
-            Alle ({findings.length})
+            {t('findingsView.all')} ({findings.length})
           </button>
           {SEVERITIES.map(s => counts[s] > 0 && (
             <button key={s} onClick={() => setFilter(s)}
@@ -43,7 +46,7 @@ export function FindingsView() {
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="Befunde durchsuchen…"
+          placeholder={t('findingsView.searchPlaceholder')}
           className="w-full bg-[#21262d] border border-[#30363d] rounded-md px-3 py-1.5 text-sm text-[#e6edf3] placeholder-[#8b949e] focus:outline-none focus:border-[#58a6ff]"
         />
       </div>
@@ -54,23 +57,25 @@ export function FindingsView() {
             <div className="text-center">
               <div className="text-3xl mb-2">{findings.length === 0 ? '✅' : '🔍'}</div>
               <div className="text-[#8b949e] text-sm">
-                {findings.length === 0 ? 'Keine Befunde — System sieht gut aus!' : 'Keine Treffer'}
+                {findings.length === 0 ? t('findingsView.noFindingsGood') : t('findingsView.noMatches')}
               </div>
             </div>
           </div>
         ) : (
           filtered.map(f => <FindingCard key={f.id} finding={f}
             open={expanded === f.id}
-            onToggle={() => setExpanded(expanded === f.id ? null : f.id)} />)
+            onToggle={() => setExpanded(expanded === f.id ? null : f.id)}
+            labels={SEV_LABELS} />)
         )}
       </div>
     </div>
   )
 }
 
-function FindingCard({ finding: f, open, onToggle }: {
-  finding: Finding; open: boolean; onToggle: () => void
+function FindingCard({ finding: f, open, onToggle, labels }: {
+  finding: Finding; open: boolean; onToggle: () => void; labels: Record<Severity, string>
 }) {
+  const t = useT()
   const color = severityColor(f.severity)
   return (
     <div className="bg-[#161b22] border border-[#30363d] rounded-lg overflow-hidden">
@@ -80,7 +85,7 @@ function FindingCard({ finding: f, open, onToggle }: {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-0.5">
               <span className="text-xs font-medium px-1.5 py-0.5 rounded" style={{ color, background: color + '20' }}>
-                {SEV_LABELS[f.severity as Severity]}
+                {labels[f.severity as Severity]}
               </span>
               <span className="text-xs text-[#8b949e]">{f.kind}</span>
             </div>
@@ -93,19 +98,19 @@ function FindingCard({ finding: f, open, onToggle }: {
       {open && (
         <div className="px-4 pb-4 border-t border-[#30363d] space-y-3 pt-3">
           <div>
-            <div className="text-xs text-[#8b949e] mb-1">Beschreibung</div>
+            <div className="text-xs text-[#8b949e] mb-1">{t('findingsView.description')}</div>
             <div className="text-sm text-[#e6edf3]">{f.description}</div>
           </div>
           <div>
-            <div className="text-xs text-[#8b949e] mb-1">Betroffenes Element</div>
+            <div className="text-xs text-[#8b949e] mb-1">{t('findingsView.affectedItem')}</div>
             <code className="text-xs bg-[#0d1117] text-[#79c0ff] px-2 py-1 rounded block">{f.affected_item}</code>
           </div>
           <div>
-            <div className="text-xs text-[#8b949e] mb-1">Empfehlung</div>
+            <div className="text-xs text-[#8b949e] mb-1">{t('findingsView.recommendation')}</div>
             <div className="text-sm text-[#3fb950]">{f.recommendation}</div>
           </div>
           <div className="text-xs text-[#8b949e]">
-            {new Date(f.timestamp).toLocaleString('de-CH')}
+            {new Date(f.timestamp).toLocaleString(dateLocale())}
           </div>
         </div>
       )}

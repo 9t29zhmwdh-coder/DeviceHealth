@@ -1,9 +1,8 @@
 use dh_core::{
     ai::ollama::OllamaBackend,
     ai::AiBackend,
-    analyzer::{run_full_analysis, AnalysisResult},
+    analyzer::run_full_analysis,
     db::queries,
-    history,
     models::{
         finding::Finding,
         health::HealthSnapshot,
@@ -11,7 +10,7 @@ use dh_core::{
         recommendation::Recommendation,
     },
 };
-use tauri::State;
+use tauri::{Emitter, State};
 use crate::{error::DhResult, state::AppState};
 
 #[tauri::command]

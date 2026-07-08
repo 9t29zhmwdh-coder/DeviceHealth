@@ -1,11 +1,9 @@
 import { useState } from 'react'
 import { useAnalysisStore } from '../../stores/analysisStore'
 import { api, riskColor, formatBytes, type ProcessEntry, type RiskLevel } from '../../lib/tauri'
+import { useT } from '../../lib/i18n'
 
 const RISK_ORDER: RiskLevel[] = ['Critical', 'High', 'Medium', 'Low', 'Unknown', 'Safe']
-const RISK_LABELS: Record<RiskLevel, string> = {
-  Critical: 'Kritisch', High: 'Hoch', Medium: 'Mittel', Low: 'Niedrig', Unknown: 'Unbekannt', Safe: 'Sicher',
-}
 
 export function ProcessList() {
   const { processes, showSafe, setShowSafe } = useAnalysisStore()
@@ -15,6 +13,11 @@ export function ProcessList() {
   const [selected, setSelected] = useState<ProcessEntry | null>(null)
   const [explanation, setExplanation] = useState<string | null>(null)
   const [explaining, setExplaining] = useState(false)
+  const t = useT()
+  const RISK_LABELS: Record<RiskLevel, string> = {
+    Critical: t('risk.Critical'), High: t('risk.High'), Medium: t('risk.Medium'),
+    Low: t('risk.Low'), Unknown: t('risk.Unknown'), Safe: t('risk.Safe'),
+  }
 
   const q = search.toLowerCase()
   const filtered = processes
@@ -42,7 +45,7 @@ export function ProcessList() {
       )
       setExplanation(result)
     } catch {
-      setExplanation('KI nicht verfügbar. Stellen Sie sicher, dass Ollama läuft.')
+      setExplanation(t('processList.aiUnavailable'))
     } finally {
       setExplaining(false)
     }
@@ -62,23 +65,23 @@ export function ProcessList() {
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Prozess suchen…"
+            placeholder={t('processList.searchPlaceholder')}
             className="flex-1 bg-[#21262d] border border-[#30363d] rounded-md px-3 py-1.5 text-sm text-[#e6edf3] placeholder-[#8b949e] focus:outline-none focus:border-[#58a6ff]"
           />
           <label className="flex items-center gap-2 text-xs text-[#8b949e] cursor-pointer select-none">
             <input type="checkbox" checked={showSafe} onChange={e => setShowSafe(e.target.checked)}
               className="accent-[#58a6ff]" />
-            Sichere Prozesse anzeigen
+            {t('processList.showSafe')}
           </label>
-          <span className="text-xs text-[#8b949e]">{filtered.length} Prozesse</span>
+          <span className="text-xs text-[#8b949e]">{filtered.length} {t('processList.processesUnit')}</span>
         </div>
 
         <div className="px-4 py-2 grid grid-cols-[1fr_80px_80px_80px_70px_32px] gap-2 border-b border-[#30363d]">
-          <SortBtn col="name" label="Name" />
+          <SortBtn col="name" label={t('processList.name')} />
           <SortBtn col="cpu" label="CPU" />
           <SortBtn col="mem" label="RAM" />
-          <SortBtn col="risk" label="Risiko" />
-          <span className="text-xs text-[#8b949e] uppercase tracking-wider">Flags</span>
+          <SortBtn col="risk" label={t('processList.risk')} />
+          <span className="text-xs text-[#8b949e] uppercase tracking-wider">{t('processList.flags')}</span>
           <span />
         </div>
 
@@ -115,7 +118,7 @@ export function ProcessList() {
           ))}
           {filtered.length === 0 && (
             <div className="flex items-center justify-center h-32 text-[#8b949e] text-sm">
-              Keine Prozesse gefunden
+              {t('processList.noProcessesFound')}
             </div>
           )}
         </div>
@@ -127,26 +130,26 @@ export function ProcessList() {
           <div className="p-4 border-b border-[#30363d] flex items-start justify-between">
             <div>
               <div className="text-sm font-medium text-[#e6edf3]">{selected.name}</div>
-              <div className="text-xs text-[#8b949e] mt-0.5">PID {selected.pid}</div>
+              <div className="text-xs text-[#8b949e] mt-0.5">{t('processList.pid')} {selected.pid}</div>
             </div>
             <button onClick={() => setSelected(null)} className="text-[#8b949e] hover:text-[#e6edf3] text-lg leading-none">×</button>
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
-            <InfoRow label="Risiko" value={RISK_LABELS[selected.risk]} color={riskColor(selected.risk)} />
+            <InfoRow label={t('processList.risk')} value={RISK_LABELS[selected.risk]} color={riskColor(selected.risk)} />
             <InfoRow label="CPU" value={`${selected.cpu_usage.toFixed(1)}%`} />
             <InfoRow label="RAM" value={formatBytes(selected.memory_bytes)} />
-            <InfoRow label="Status" value={selected.status} />
-            {selected.user && <InfoRow label="Nutzer" value={selected.user} />}
-            {selected.vendor && <InfoRow label="Hersteller" value={selected.vendor} />}
+            <InfoRow label={t('processList.status')} value={selected.status} />
+            {selected.user && <InfoRow label={t('processList.user')} value={selected.user} />}
+            {selected.vendor && <InfoRow label={t('processList.vendor')} value={selected.vendor} />}
             {selected.exe_path && (
               <div>
-                <div className="text-xs text-[#8b949e] mb-1">Pfad</div>
+                <div className="text-xs text-[#8b949e] mb-1">{t('processList.path')}</div>
                 <div className="text-xs font-mono text-[#e6edf3] break-all bg-[#161b22] p-2 rounded">{selected.exe_path}</div>
               </div>
             )}
             {selected.flags.length > 0 && (
               <div>
-                <div className="text-xs text-[#8b949e] mb-1">Flags</div>
+                <div className="text-xs text-[#8b949e] mb-1">{t('processList.flags')}</div>
                 <div className="flex flex-wrap gap-1">
                   {selected.flags.map(f => (
                     <span key={f} className="text-xs bg-[#21262d] text-[#8b949e] px-2 py-0.5 rounded">{f}</span>
@@ -155,17 +158,17 @@ export function ProcessList() {
               </div>
             )}
             <div className="border-t border-[#30363d] pt-3">
-              <div className="text-xs text-[#8b949e] mb-2">KI-Erklärung</div>
+              <div className="text-xs text-[#8b949e] mb-2">{t('processList.aiExplanation')}</div>
               {explaining ? (
                 <div className="flex items-center gap-2 text-xs text-[#8b949e]">
-                  <span className="animate-spin">⟳</span> Analysiere…
+                  <span className="animate-spin">⟳</span> {t('dashboard.analyzing')}
                 </div>
               ) : explanation ? (
                 <div className="text-xs text-[#e6edf3] leading-relaxed">{explanation}</div>
               ) : (
                 <button onClick={() => handleExplain(selected)}
                   className="text-xs text-[#58a6ff] hover:underline">
-                  Prozess erklären →
+                  {t('processList.explainProcess')} →
                 </button>
               )}
             </div>
