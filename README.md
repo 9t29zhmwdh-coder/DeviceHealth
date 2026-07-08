@@ -12,6 +12,12 @@ DeviceHealth analyzes all running processes, services, hardware components, and 
 
 [![CI](https://github.com/9t29zhmwdh-coder/DeviceHealth/actions/workflows/ci.yml/badge.svg)](https://github.com/9t29zhmwdh-coder/DeviceHealth/actions) ![Platform](https://img.shields.io/badge/Platform-macOS_%7C_Windows-lightgrey) ![Rust](https://img.shields.io/badge/Rust-CE422B?logo=rust&logoColor=white) ![Tauri](https://img.shields.io/badge/Tauri-24C8D8?logo=tauri&logoColor=white) ![AI | Claude Code](https://img.shields.io/badge/AI-Claude_Code-black?logo=anthropic&logoColor=white) ![AI | Copilot](https://img.shields.io/badge/AI-Copilot-black?logo=github&logoColor=white) ![AI | Ollama](https://img.shields.io/badge/AI-Ollama-black?logo=ollama&logoColor=white)
 
+> **How it runs:** DeviceHealth is a native desktop app, not a server or browser tool. It opens as its own window and has no tray icon or background service; it only scans your system while you actively trigger a run.
+
+![DeviceHealth](docs/screenshot.png)
+
+**In practice:** you trigger a scan, get a 0 to 100 health score with categorized findings (bloatware, zombie processes, autostart clutter, security risks), and can ask Ollama to explain any process in plain language before deciding what to fix. Every snapshot is stored locally so you can track the trend over time.
+
 ---
 
 ## Features
@@ -52,6 +58,16 @@ ollama pull llama3
 cd frontend && npm install && cd ..
 cargo tauri dev
 ```
+
+---
+
+## Uninstall / Cleanup
+
+- **macOS:** delete the app bundle, then remove `~/Library/Application Support/com.raystudio.devicehealth/` (snapshot history and AI cache)
+- **Linux:** delete the app binary, then remove `~/.local/share/devicehealth/`
+- **Windows:** uninstall via Settings → Apps, then remove `%LOCALAPPDATA%\RayStudio\DeviceHealth\`
+
+No registry entries or background services are left behind.
 
 ---
 

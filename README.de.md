@@ -11,8 +11,12 @@
 DeviceHealth analysiert alle laufenden Prozesse, Dienste, Hardware-Komponenten und Netzwerkaktivitäten auf deinem Gerät, erkennt Probleme automatisch und liefert Klartext-KI-Erklärungen mit konkreten Optimierungsempfehlungen; 100% lokal, ohne jegliche Cloud-Verbindung.
 
 [![CI](https://github.com/9t29zhmwdh-coder/DeviceHealth/actions/workflows/ci.yml/badge.svg)](https://github.com/9t29zhmwdh-coder/DeviceHealth/actions) ![Platform](https://img.shields.io/badge/Platform-macOS_%7C_Windows-lightgrey) ![Rust](https://img.shields.io/badge/Rust-CE422B?logo=rust&logoColor=white) ![Tauri](https://img.shields.io/badge/Tauri-24C8D8?logo=tauri&logoColor=white) ![AI | Claude Code](https://img.shields.io/badge/AI-Claude_Code-black?logo=anthropic&logoColor=white) ![AI | Copilot](https://img.shields.io/badge/AI-Copilot-black?logo=github&logoColor=white) ![AI | Ollama](https://img.shields.io/badge/AI-Ollama-black?logo=ollama&logoColor=white)
-![Plattform](https://img.shields.io/badge/Plattform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
-![Lizenz](https://img.shields.io/badge/Lizenz-MIT-green)
+
+> **So läuft es:** DeviceHealth ist eine native Desktop-App, kein Server oder Browser-Tool. Sie öffnet sich als eigenes Fenster, ohne Tray-Icon oder Hintergrunddienst; sie scannt dein System nur, wenn du einen Durchlauf aktiv auslöst.
+
+![DeviceHealth](docs/screenshot.de.png)
+
+**In der Praxis:** du löst einen Scan aus, erhältst einen Gesundheitsscore von 0 bis 100 mit kategorisierten Befunden (Bloatware, Zombie-Prozesse, Autostart-Wildwuchs, Sicherheitsrisiken) und kannst dir jeden Prozess von Ollama in Klartext erklären lassen, bevor du entscheidest was behoben wird. Jeder Snapshot wird lokal gespeichert, damit du den Trend über die Zeit verfolgen kannst.
 
 ---
 
@@ -54,6 +58,16 @@ ollama pull llama3
 cd frontend && npm install && cd ..
 cargo tauri dev
 ```
+
+---
+
+## Deinstallation / Aufräumen
+
+- **macOS:** App-Bundle löschen, danach `~/Library/Application Support/com.raystudio.devicehealth/` entfernen (Snapshot-Verlauf und KI-Cache)
+- **Linux:** App-Binary löschen, danach `~/.local/share/devicehealth/` entfernen
+- **Windows:** Deinstallation über Einstellungen → Apps, danach `%LOCALAPPDATA%\RayStudio\DeviceHealth\` entfernen
+
+Es bleiben keine Registry-Einträge oder Hintergrunddienste zurück.
 
 ---
 
