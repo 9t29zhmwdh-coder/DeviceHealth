@@ -20,6 +20,10 @@ DeviceHealth analyzes all running processes, services, hardware components, and 
 
 ---
 
+> 🌱 New here? → [Step-by-step guide for beginners](GETTING_STARTED.md)
+
+---
+
 ## Features
 
 | Feature | Description |
@@ -43,8 +47,6 @@ DeviceHealth analyzes all running processes, services, hardware components, and 
 - [Tauri CLI v2](https://tauri.app/): `cargo install tauri-cli`
 - [Ollama](https://ollama.ai) (optional, for AI explanations)
 - macOS / Windows / Linux
-
-> 🌱 New here? → [Step-by-step guide for beginners](GETTING_STARTED.md)
 
 ---
 
