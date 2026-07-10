@@ -48,8 +48,6 @@ DeviceHealth analyzes all running processes, services, hardware components, and 
 - [Ollama](https://ollama.ai) (optional, for AI explanations)
 - macOS / Windows / Linux
 
-> 🌱 New here? → [Step-by-step guide for beginners](GETTING_STARTED.md)
-
 ---
 
 ## Quick Start

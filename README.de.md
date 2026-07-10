@@ -20,6 +20,10 @@ DeviceHealth analysiert alle laufenden Prozesse, Dienste, Hardware-Komponenten u
 
 ---
 
+> 🌱 Neu hier? → [Schritt-für-Schritt-Anleitung für Einsteiger](GETTING_STARTED.md)
+
+---
+
 ## Funktionen
 
 | Funktion | Beschreibung |
