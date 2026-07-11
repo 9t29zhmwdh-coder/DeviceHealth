@@ -6,7 +6,7 @@
 - Hardware analysis: CPU, RAM, disk, temperatures via sysinfo
 - Security analysis: open ports, suspicious processes, basic firewall check
 - Service analysis: system services and daemon status, startup items
-- HealthScore 0–100 with per-category subscores (performance, security, stability, storage)
+- HealthScore 0-100 with per-category subscores (performance, security, stability, storage)
 - AI explanations and optimization recommendations via Ollama
 - `dh-core` Rust crate with modular analyzer architecture
 - `dh-cli` binary for headless diagnostics
@@ -29,7 +29,7 @@
 - AI-generated prioritized action list ("fix these 3 things first")
 - Scheduled periodic scans
 
-## v1.0.0 — Stable Release
+## v1.0.0: Stable Release
 
 - Stable public API for `dh-core` (semver)
 - Full test coverage (unit + integration)

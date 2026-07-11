@@ -1,4 +1,4 @@
-# DeviceHealth — Professional Repo Skeleton
+# DeviceHealth: Professional Repo Skeleton
 
 **Generated:** 2026-06-16 | **Earliest commit:** 2026-06-12 | **Release:** v0.1.0
 
@@ -53,7 +53,7 @@ DeviceHealth/
 - CHANGELOG.md ✅
 - .github/ISSUE_TEMPLATE/ ✅
 - .github/PULL_REQUEST_TEMPLATE.md ✅
-- .github/workflows/ci.yml ⚠️ — requires `workflows` OAuth scope (run: gh auth refresh -s workflows)
+- .github/workflows/ci.yml ⚠️: requires `workflows` OAuth scope (run: gh auth refresh -s workflows)
 - GitHub Release v0.1.0 ✅
 
 ## CI Workflow (push manually after: gh auth refresh -s workflows)
@@ -101,10 +101,10 @@ jobs:
 
 ## Reusable from this repo
 
-- `dh-core/src/score/` — HealthScore (0–100, weighted subscore model) reusable as a diagnostic scoring primitive in other RayStudio monitoring tools
-- `CODE_OF_CONDUCT.md` — identical across all RayStudio repos, copy as-is
-- `PULL_REQUEST_TEMPLATE.md` — generic Rust/Tauri checklist, reusable for all Rust workspace repos
+- `dh-core/src/score/`: HealthScore (0-100, weighted subscore model) reusable as a diagnostic scoring primitive in other RayStudio monitoring tools
+- `CODE_OF_CONDUCT.md`: identical across all RayStudio repos, copy as-is
+- `PULL_REQUEST_TEMPLATE.md`: generic Rust/Tauri checklist, reusable for all Rust workspace repos
 
 ---
 
-*DeviceHealth — RayStudio · Rafael Yilmaz · MIT License · 2026*
+*DeviceHealth: RayStudio · Rafael Yilmaz · MIT License · 2026*
