@@ -1,4 +1,4 @@
-# Security Policy — DeviceHealth
+# Security Policy: DeviceHealth
 
 ## Supported Versions
 

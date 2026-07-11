@@ -1,6 +1,6 @@
-# Roadmap — DeviceHealth
+# Roadmap: DeviceHealth
 
-## v0.1.0 — Initial Release (2026-06-12) ✅
+## v0.1.0, Initial Release (2026-06-12) ✅
 
 - Process analysis: running processes with CPU and memory usage per process
 - Hardware analysis: CPU, RAM, disk, temperatures via sysinfo
@@ -13,7 +13,7 @@
 - Tauri v2 desktop shell (macOS, Windows, Linux)
 - React/TypeScript frontend with score dial and process/hardware panels
 
-## v0.2.0 — History & Alerts
+## v0.2.0, History & Alerts
 
 - Persistent scan history (SQLite) for trend tracking
 - Configurable alert thresholds (CPU%, RAM%, disk space, temperature)
@@ -21,7 +21,7 @@
 - Score history chart (last 7 / 30 days)
 - Export diagnostic report (JSON, plain text, PDF)
 
-## v0.3.0 — Deep Diagnostics
+## v0.3.0, Deep Diagnostics
 
 - Startup impact analysis (boot-time contribution per service/app)
 - Disk health via S.M.A.R.T. data (where OS supports it)
@@ -43,3 +43,7 @@
 - Cloud-based diagnostics or telemetry upload
 - Kernel-level drivers or system modifications
 - Mobile platforms (iOS, Android)
+
+## Dual-Licensing Readiness
+
+Assessed 2026-07-11: Community-only, not a Dual-Licensing candidate. Endpoint health monitoring is a real enterprise category (NinjaOne, Datto and similar RMM tools), but DeviceHealth's own roadmap explicitly rules out remote monitoring of other machines and any telemetry upload by design, which forecloses the fleet-management angle that would justify an Enterprise tier. It is a single-machine, local-only diagnostics tool with no team dimension. Revisit only if the project's scope intentionally changes to support fleet-wide monitoring.
