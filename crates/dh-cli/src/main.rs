@@ -9,13 +9,13 @@ async fn main() -> Result<()> {
 
     match cmd {
         "scan" => {
-            println!("DeviceHealth — Systemanalyse läuft…");
+            println!("DeviceHealth: Systemanalyse läuft…");
             let settings = AppSettings::default();
             let result = tokio::task::spawn_blocking(move || run_full_analysis(&settings)).await?;
             println!("Gesundheitsscore: {}/100 ({})", result.snapshot.score, result.snapshot.grade.label());
             println!("Gefundene Probleme: {}", result.findings.len());
             for f in &result.findings {
-                println!("  [{}] {} — {}", f.severity.label(), f.title, f.affected_item);
+                println!("  [{}] {}: {}", f.severity.label(), f.title, f.affected_item);
             }
         }
         "processes" => {
