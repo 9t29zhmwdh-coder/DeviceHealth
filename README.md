@@ -16,6 +16,12 @@ DeviceHealth analyzes all running processes, services, hardware components, and 
 
 ![DeviceHealth](docs/screenshot.png)
 
+---
+
+> 💾 **Download:** [macOS (DMG)](https://github.com/9t29zhmwdh-coder/DeviceHealth/releases/latest/download/DeviceHealth.dmg) · [Windows (Installer)](https://github.com/9t29zhmwdh-coder/DeviceHealth/releases/latest/download/DeviceHealth-Setup.exe) · [Linux (AppImage)](https://github.com/9t29zhmwdh-coder/DeviceHealth/releases/latest/download/DeviceHealth.AppImage): always the latest release, not code-signed/notarized (Gatekeeper/SmartScreen will warn on first run). Or build from source, see Getting Started below.
+
+---
+
 **In practice:** you trigger a scan, get a 0 to 100 health score with categorized findings (bloatware, zombie processes, autostart clutter, security risks), and can ask Ollama to explain any process in plain language before deciding what to fix. Every snapshot is stored locally so you can track the trend over time.
 
 ---
