@@ -6,6 +6,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), [Semantic Vers
 
 ---
 
+## [1.0.0] - 2026-07-17
+
+First stable release: a real, packaged, installable distribution exists
+for end users. Real macOS/Windows/Linux installers (DMG, NSIS, AppImage/deb/rpm).
+
 ## [0.2.8] - 2026-07-17
 
 ### Changed
