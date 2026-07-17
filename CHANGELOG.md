@@ -6,6 +6,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), [Semantic Vers
 
 ---
 
+## [0.2.8] - 2026-07-17
+
+### Changed
+- CI: added an explicit `permissions: contents: read` block to the workflow(s) that were missing one (CodeQL `actions/missing-workflow-permissions`), narrowing the default GITHUB_TOKEN scope.
+
 ## [0.2.7] - 2026-07-17
 ### Changed
 - SECURITY.md: documented the accepted glib/gtk transitive RUSTSEC vulnerability (medium, no fix available without a Tauri major-version bump), matching the same entry already present in LifeSort/MailPilot.
