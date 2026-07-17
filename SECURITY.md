@@ -23,4 +23,8 @@ Response within 7 days.
 - All Tauri IPC commands explicitly allowlisted
 - No third-party analytics SDKs
 
-**Last updated: 2026-06-12**
+## Known Accepted Exceptions
+
+- **glib (RUSTSEC, medium): unsoundness in `Iterator`/`DoubleEndedIterator` impls for `glib::VariantStrIter`**, present in `glib 0.18.5` (a transitive dependency of Tauri's Linux tray/menu integration via `gtk 0.18.2`, `atk 0.18.2`). `gtk 0.18.2` pins `glib` to `^0.18`; the fixed `glib 0.20.0` requires a `gtk`/Tauri major-version bump, not an isolated patch. This crate is only linked on Linux builds and the unsound pattern is not reachable from this application's own code. Accepted as of 2026-07-17; revisit when Tauri's own dependency tree moves past `gtk 0.18`.
+
+**Last updated: 2026-07-17**
