@@ -6,6 +6,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), [Semantic Vers
 
 ---
 
+## [1.0.1] - 2026-07-20
+
+### Changed
+
+- OpenSSF Scorecard workflow and badge.
+- `copilot-instructions.md` for consistent AI-assisted contributions.
+- Coverage reporting in CI (cargo-tarpaulin, with the sqlx database prepared before compiling tests).
+- Split the README's security/CI badges onto their own line, separate from the platform/tech/AI badges (they were rendering as a single merged line).
+
 ## [1.0.0] - 2026-07-17
 
 First stable release: a real, packaged, installable distribution exists

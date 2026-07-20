@@ -11,6 +11,7 @@
 DeviceHealth analysiert alle laufenden Prozesse, Dienste, Hardware-Komponenten und Netzwerkaktivitäten auf deinem Gerät, erkennt Probleme automatisch und liefert Klartext-KI-Erklärungen mit konkreten Optimierungsempfehlungen; 100% lokal, ohne jegliche Cloud-Verbindung.
 
 [![CI](https://github.com/9t29zhmwdh-coder/DeviceHealth/actions/workflows/ci.yml/badge.svg)](https://github.com/9t29zhmwdh-coder/DeviceHealth/actions) [![CodeQL](https://github.com/9t29zhmwdh-coder/DeviceHealth/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/9t29zhmwdh-coder/DeviceHealth/security/code-scanning) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/9t29zhmwdh-coder/DeviceHealth/badge)](https://securityscorecards.dev/viewer/?uri=github.com/9t29zhmwdh-coder/DeviceHealth)
+
 ![Platform](https://img.shields.io/badge/Platform-macOS_%7C_Windows-lightgrey) ![Rust](https://img.shields.io/badge/Rust-CE422B?logo=rust&logoColor=white) ![Tauri](https://img.shields.io/badge/Tauri-24C8D8?logo=tauri&logoColor=white) ![AI | Claude Code](https://img.shields.io/badge/AI-Claude_Code-black?logo=anthropic&logoColor=white) ![AI | Copilot](https://img.shields.io/badge/AI-Copilot-black?logo=github&logoColor=white) ![AI | Ollama](https://img.shields.io/badge/AI-Ollama-black?logo=ollama&logoColor=white)
 
 > **So läuft es:** DeviceHealth ist eine native Desktop-App, kein Server oder Browser-Tool. Sie öffnet sich als eigenes Fenster, ohne Tray-Icon oder Hintergrunddienst; sie scannt dein System nur, wenn du einen Durchlauf aktiv auslöst.
