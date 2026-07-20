@@ -76,6 +76,12 @@ jobs:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
       - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30 # stable
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+      - name: Install sqlx-cli
+        run: cargo install sqlx-cli --no-default-features --features sqlite
+      - name: Prepare database
+        run: |
+          sqlx database create
+          sqlx migrate run --source crates/dh-core/src/db/migrations
       - name: Install tarpaulin
         run: cargo install cargo-tarpaulin --locked
       - name: Generate coverage
