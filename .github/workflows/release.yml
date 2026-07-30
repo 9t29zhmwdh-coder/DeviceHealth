@@ -10,7 +10,7 @@ on:
       - 'v*'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   release:
@@ -19,6 +19,11 @@ jobs:
       matrix:
         platform: [macos-latest, windows-latest, ubuntu-latest]
     runs-on: ${{ matrix.platform }}
+    permissions:
+      # Nur was ueber das workflow-weite contents: read hinausgeht.
+      # Read-Rechte hier zu wiederholen ist das, was OpenSSF Scorecard
+      # als zu weite Token-Berechtigung bemaengelt.
+      contents: write
     env:
       DATABASE_URL: sqlite:./ci_check.db
     steps:
