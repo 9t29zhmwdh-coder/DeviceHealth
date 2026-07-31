@@ -6,6 +6,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), [Semantic Vers
 
 ---
 
+## [1.0.10] - 2026-07-31
+
+### Fixed
+
+- CI checked only macOS while the release builds for macOS, Linux and Windows. The AppImage and the Windows installer went out without ever having been compile-checked, so a fault appearing only on those platforms would have surfaced in a user's download rather than in a pull request. `check` now runs as a matrix over all three. The Linux runner installs the same GTK and WebKit packages the release workflow installs, since Tauri does not build without them.
+- `db_path` bound `HOME` for every platform although the Windows branch uses `USERPROFILE`, so on Windows the binding was unused and the build failed under `-D warnings`. Each branch now reads its own variable.
+- The first matrix run earned its keep. `cargo check` failed on Windows with an unused `mut` and a `classify_autostart_risk` reported as never used. Both are symptoms of the same gap: `get_autostart_entries` branches on macOS and Linux and has no Windows branch, so on Windows it returns an empty list and the autostart category silently finds nothing. The lints are now cfg-gated to say so, the READMEs state the limitation instead of implying full coverage, and implementing it is on the roadmap.
+- The `solo-main-protection` ruleset now requires `Check (ubuntu-latest)`, `(macos-latest)` and `(windows-latest)` instead of the old single `Check`. Renaming a job without moving the required context leaves every later pull request permanently unmergeable while looking green.
+
+---
+
 ## [1.0.9] - 2026-07-31
 
 ### Fixed

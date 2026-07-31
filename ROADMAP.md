@@ -15,6 +15,13 @@
 
 ## v0.2.0, History & Alerts
 
+- Autostart detection on Windows. `get_autostart_entries` branches on macOS and
+  Linux only, so on Windows it returns an empty list and the category silently
+  reports nothing. Needs the registry Run keys (`HKCU` and `HKLM`) and the
+  Startup folder. Surfaced when CI began checking Windows: the risk classifier
+  showed up as dead code there, which is what an unimplemented platform branch
+  looks like from the compiler's side.
+
 - Persistent scan history (SQLite) for trend tracking
 - Configurable alert thresholds (CPU%, RAM%, disk space, temperature)
 - Background monitoring mode with system tray integration

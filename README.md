@@ -18,6 +18,10 @@ bloatware, zombie processes, autostart clutter and security risks. Anything you
 do not recognise, you can ask a local Ollama model to explain in plain words
 before you decide.
 
+Autostart detection covers macOS LaunchAgents and Linux systemd units. On
+Windows it currently finds nothing, since neither the registry Run keys nor the
+Startup folder are read yet (see [ROADMAP.md](ROADMAP.md)).
+
 Snapshots are kept locally, so "it has been getting slower" becomes a curve
 instead of a feeling. Nothing is uploaded, and there is no account.
 

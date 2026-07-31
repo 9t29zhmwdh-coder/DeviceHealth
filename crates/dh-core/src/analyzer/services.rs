@@ -4,6 +4,11 @@ use crate::models::{
 };
 
 pub fn get_autostart_entries() -> Vec<AutostartEntry> {
+    // Unter Windows liegt Autostart in den Run-Schluesseln der Registry und im
+    // Startup-Ordner. Beides ist nicht implementiert, die Liste bleibt dort
+    // also leer, siehe ROADMAP.md. Das `mut` und die Risikobewertung weiter
+    // unten sind deshalb nur auf macOS und Linux in Gebrauch.
+    #[cfg_attr(target_os = "windows", allow(unused_mut))]
     let mut entries = Vec::new();
 
     #[cfg(target_os = "macos")]
@@ -113,6 +118,7 @@ pub fn detect_autostart_findings() -> Vec<Finding> {
     findings
 }
 
+#[cfg(any(target_os = "macos", target_os = "linux"))]
 fn classify_autostart_risk(name: &str) -> RiskLevel {
     let n = name.to_lowercase();
     if n.contains("miner") || n.contains("cryptonight") { return RiskLevel::Critical; }

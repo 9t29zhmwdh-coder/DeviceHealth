@@ -34,6 +34,10 @@ async fn main() {
 }
 
 fn db_path() -> String {
+    // Jeder Zweig holt sich seine eigene Variable. Vorher stand `home` oben
+    // fuer alle da, obwohl Windows `USERPROFILE` verwendet: unter Windows war
+    // die Bindung damit ungenutzt und der Build scheiterte an -D warnings.
+    #[cfg(any(target_os = "macos", target_os = "linux"))]
     let home = std::env::var("HOME").unwrap_or_else(|_| ".".to_string());
     #[cfg(target_os = "macos")]
     return format!("{}/Library/Application Support/com.raystudio.devicehealth/devicehealth.db", home);

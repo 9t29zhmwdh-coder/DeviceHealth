@@ -669,7 +669,7 @@ dependencies = [
 
 [[package]]
 name = "devicehealth"
-version = "1.0.5"
+version = "1.0.11"
 dependencies = [
  "anyhow",
  "chrono",
@@ -687,7 +687,7 @@ dependencies = [
 
 [[package]]
 name = "dh-cli"
-version = "1.0.5"
+version = "1.0.11"
 dependencies = [
  "anyhow",
  "dh-core",
@@ -697,7 +697,7 @@ dependencies = [
 
 [[package]]
 name = "dh-core"
-version = "1.0.5"
+version = "1.0.11"
 dependencies = [
  "anyhow",
  "async-trait",

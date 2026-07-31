@@ -16,10 +16,27 @@ permissions:
 
 jobs:
   check:
-    name: Check
-    runs-on: macos-latest
+    # Alle drei Zielplattformen, weil das Release fuer alle drei baut. Vorher
+    # lief nur macOS: ein Fehler, der nur unter Windows oder Linux auftritt,
+    # fiel erst beim Release auf, wenn ueberhaupt. Die AppImage- und
+    # .exe-Artefakte gingen also ungeprueft raus.
+    name: Check (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Tauri baut unter Linux gegen GTK und WebKit. Der Runner bringt beides
+      # nicht mit, und ohne diesen Schritt scheitert schon cargo check an
+      # gobject-2.0. Der Release-Workflow installiert dieselben Pakete.
+      - name: Install Linux system dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
       - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30 # stable
         with:
           components: clippy
