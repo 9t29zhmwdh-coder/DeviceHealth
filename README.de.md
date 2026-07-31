@@ -6,9 +6,26 @@
 
 [🇬🇧 English Version](README.md)
 
-**KI-gestützte Systemdiagnose und Gesundheitsüberwachung. Bewusst offline, deine Systemdaten bleiben auf dem Gerät. Entwickelt mit Rust und Tauri.**
+**Sagt dir, welche der 200 Sachen auf deinem Rechner du gefahrlos loswirst.**
 
-DeviceHealth analysiert alle laufenden Prozesse, Dienste, Hardware-Komponenten und Netzwerkaktivitäten auf deinem Gerät, erkennt Probleme automatisch und liefert Klartext-KI-Erklärungen mit konkreten Optimierungsempfehlungen; 100% lokal, ohne jegliche Cloud-Verbindung.
+Die Kiste ist lahm, die Aktivitätsanzeige listet zweihundert Prozesse, und du
+erkennst vielleicht dreissig davon. Der Rest heisst nach nichts, das könnte
+genauso gut ein Treiber sein, den du brauchst, wie ein Überbleibsel von einem
+Installer vor drei Jahren. Also fliegt nichts raus, weil ein Fehlgriff das
+System zerlegt.
+
+DeviceHealth scannt, gibt dem System eine Punktzahl bis 100 und sortiert die
+Funde in Bloatware, Zombie-Prozesse, Autostart-Ballast und Sicherheitsrisiken.
+Was du nicht kennst, lässt du dir von einem lokalen Ollama-Modell in normalen
+Worten erklären, bevor du entscheidest.
+
+Die Snapshots bleiben lokal, damit aus "wird immer langsamer" eine Kurve wird
+statt eines Gefühls. Nichts wird hochgeladen, und einen Account gibt es nicht.
+
+**Nichts für dich, wenn** du ohnehin weisst, was auf deiner Maschine läuft.
+`htop`, Aktivitätsanzeige und Autoruns liefern dieselben Daten schneller; die
+Bewertung und die Erklärungen zahlen sich erst aus, wenn dir die Prozessliste
+fremd ist.
 
 [![CI](https://github.com/9t29zhmwdh-coder/DeviceHealth/actions/workflows/ci.yml/badge.svg)](https://github.com/9t29zhmwdh-coder/DeviceHealth/actions) [![CodeQL](https://github.com/9t29zhmwdh-coder/DeviceHealth/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/9t29zhmwdh-coder/DeviceHealth/security/code-scanning) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/9t29zhmwdh-coder/DeviceHealth/badge)](https://securityscorecards.dev/viewer/?uri=github.com/9t29zhmwdh-coder/DeviceHealth) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13711/badge)](https://www.bestpractices.dev/projects/13711)
 
