@@ -6,9 +6,24 @@
 
 [🇩🇪 Deutsche Version](README.de.md)
 
-**AI-powered system diagnostics and health monitoring. Offline by design, your system data stays on the device. Built with Rust and Tauri.**
+**Tells you which of the 200 things running on your machine you can safely get rid of.**
 
-DeviceHealth analyzes all running processes, services, hardware components, and network activity on your machine, detects problems automatically, and provides plain-language AI explanations with concrete optimization recommendations; 100% locally, without any cloud connection.
+The machine is slow, Activity Monitor lists two hundred processes, and you
+recognise maybe thirty of them. The rest have names that could equally be a
+driver you need or something an installer left behind three years ago. So
+nothing gets removed, because guessing wrong breaks the machine.
+
+DeviceHealth scans, scores the system out of 100, and sorts what it found into
+bloatware, zombie processes, autostart clutter and security risks. Anything you
+do not recognise, you can ask a local Ollama model to explain in plain words
+before you decide.
+
+Snapshots are kept locally, so "it has been getting slower" becomes a curve
+instead of a feeling. Nothing is uploaded, and there is no account.
+
+**Not for you if** you already know what is on your machine. `htop`, Activity
+Monitor and Autoruns give you the same data faster; the scoring and the
+explanations only earn their keep when the process list is unfamiliar.
 
 [![CI](https://github.com/9t29zhmwdh-coder/DeviceHealth/actions/workflows/ci.yml/badge.svg)](https://github.com/9t29zhmwdh-coder/DeviceHealth/actions) [![CodeQL](https://github.com/9t29zhmwdh-coder/DeviceHealth/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/9t29zhmwdh-coder/DeviceHealth/security/code-scanning) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/9t29zhmwdh-coder/DeviceHealth/badge)](https://securityscorecards.dev/viewer/?uri=github.com/9t29zhmwdh-coder/DeviceHealth) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13711/badge)](https://www.bestpractices.dev/projects/13711)
 

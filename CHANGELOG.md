@@ -6,6 +6,14 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), [Semantic Vers
 
 ---
 
+## [1.0.8] - 2026-07-31
+
+### Changed
+
+- Both READMEs now open with the situation the tool is for, which is a process list full of names you cannot identify and therefore dare not touch, rather than with the analysis steps. A short paragraph says that anyone who already knows their process list is served faster by htop, Activity Monitor or Autoruns.
+
+---
+
 ## [1.0.7] - 2026-07-29
 
 ### Security
