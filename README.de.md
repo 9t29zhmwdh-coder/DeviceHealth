@@ -19,6 +19,11 @@ Funde in Bloatware, Zombie-Prozesse, Autostart-Ballast und Sicherheitsrisiken.
 Was du nicht kennst, lässt du dir von einem lokalen Ollama-Modell in normalen
 Worten erklären, bevor du entscheidest.
 
+Die Autostart-Erkennung deckt LaunchAgents unter macOS und systemd-Units unter
+Linux ab. Unter Windows findet sie derzeit nichts, weil weder die Run-Schlüssel
+der Registry noch der Startup-Ordner gelesen werden (siehe
+[ROADMAP.md](ROADMAP.md)).
+
 Die Snapshots bleiben lokal, damit aus "wird immer langsamer" eine Kurve wird
 statt eines Gefühls. Nichts wird hochgeladen, und einen Account gibt es nicht.
 
