@@ -6,6 +6,33 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), [Semantic Vers
 
 ---
 
+## [1.2.0] - 2026-08-03
+
+### Changed
+
+- `thiserror` 1 to 2. The error strings the frontend shows are unchanged, held by new tests that pass under both versions.
+- `sysinfo` 0.33 to 0.39. The API surface used here compiles without edits, but that proves little for this crate, where the risk is a changed unit rather than a changed signature. Measured on the same machine before and after: 770 processes both times, 9662 MB against 9621 MB summed, the same health score and the same two findings.
+- `sqlx` 0.8 to 0.9. All nine query sites use static SQL literals, so none runs into the guard 0.9 introduces for query strings that are not `&'static str`.
+- React 18 to 19 with `react-dom` and both type packages together, since neither half resolves alone. Checked against what React 19 removes rather than assumed.
+- `zustand` 4 to 5. All three stores already import the named `create`, which is the form version 5 expects.
+- `vite` 8.1.5 to 8.2.0 and `@vitejs/plugin-react` 6.0.4 to 6.0.5.
+- `github/codeql-action` 4.37.3 to 4.37.4 and `actions/attest` 4.2.0 to 4.2.1, merged separately and carried by this version.
+
+### Added
+
+- A test that holds the unit `sysinfo` reports memory in. The analyzer divides `proc.memory()` by 1024 twice and calls the result MB; if a future version switches to kilobytes, every value is off by a factor of 1024, the 500 MB threshold for memory-hungry processes stops firing, and the user simply sees no findings. Nothing about that would trouble a compiler.
+- Tests that hold the `DhError` messages, including the `anyhow` conversion that goes through a hand-written `From`. `Serialize` hands those strings straight to the frontend.
+
+### Removed
+
+- `thiserror` from `dh-core` and `date-fns` from the frontend. Both were declared and never used. `date-fns` had been proposed for a 3 to 4 bump.
+
+### Fixed
+
+- The changelog heading below said 1.0.10, but no 1.0.10 tag or release exists and no 1.0.11 entry ever followed. What shipped as v1.0.11 is what that entry describes.
+
+---
+
 ## [1.1.0] - 2026-08-03
 
 ### Changed
