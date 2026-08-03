@@ -163,7 +163,7 @@ export function Dashboard({ onNavigate }: Props) {
                   .slice(0, 5)
                   .map(f => (
                     <div key={f.id} className="flex items-start gap-3 p-2.5 bg-[#0d1117] rounded-md">
-                      <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
+                      <div className="w-2 h-2 rounded-full mt-1.5 shrink-0"
                         style={{ background: severityColor(f.severity) }} />
                       <div className="flex-1 min-w-0">
                         <div className="text-sm text-[#e6edf3]">{f.title}</div>

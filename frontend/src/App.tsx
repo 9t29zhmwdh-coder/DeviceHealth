@@ -59,7 +59,7 @@ export default function App() {
   return (
     <div className="flex h-screen bg-[#0d1117] text-[#e6edf3] overflow-hidden">
       {/* Sidebar */}
-      <div className="w-52 flex-shrink-0 border-r border-[#30363d] flex flex-col">
+      <div className="w-52 shrink-0 border-r border-[#30363d] flex flex-col">
         <div className="p-4 border-b border-[#30363d]">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-xl">🩺</span>

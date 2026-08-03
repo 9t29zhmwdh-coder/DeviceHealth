@@ -66,7 +66,7 @@ export function ProcessList() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder={t('processList.searchPlaceholder')}
-            className="flex-1 bg-[#21262d] border border-[#30363d] rounded-md px-3 py-1.5 text-sm text-[#e6edf3] placeholder-[#8b949e] focus:outline-none focus:border-[#58a6ff]"
+            className="flex-1 bg-[#21262d] border border-[#30363d] rounded-md px-3 py-1.5 text-sm text-[#e6edf3] placeholder-[#8b949e] focus:outline-hidden focus:border-[#58a6ff]"
           />
           <label className="flex items-center gap-2 text-xs text-[#8b949e] cursor-pointer select-none">
             <input type="checkbox" checked={showSafe} onChange={e => setShowSafe(e.target.checked)}
@@ -93,8 +93,8 @@ export function ProcessList() {
                 ${selected?.pid === p.pid ? 'bg-[#161b22]' : ''}`}>
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
-                  {p.is_zombie && <span className="text-[10px] bg-[#f8514920] text-[#f85149] px-1 rounded">Z</span>}
-                  {p.is_telemetry && <span className="text-[10px] bg-[#d2992220] text-[#d29922] px-1 rounded">T</span>}
+                  {p.is_zombie && <span className="text-[10px] bg-[#f8514920] text-[#f85149] px-1 rounded-sm">Z</span>}
+                  {p.is_telemetry && <span className="text-[10px] bg-[#d2992220] text-[#d29922] px-1 rounded-sm">T</span>}
                   <span className="text-sm text-[#e6edf3] truncate">{p.name}</span>
                 </div>
                 {p.description && (
@@ -110,7 +110,7 @@ export function ProcessList() {
               </span>
               <div className="flex gap-1 flex-wrap">
                 {p.flags.slice(0, 2).map(f => (
-                  <span key={f} className="text-[9px] bg-[#30363d] text-[#8b949e] px-1 rounded">{f}</span>
+                  <span key={f} className="text-[9px] bg-[#30363d] text-[#8b949e] px-1 rounded-sm">{f}</span>
                 ))}
               </div>
               <span className="text-xs text-[#8b949e]">▶</span>
@@ -144,7 +144,7 @@ export function ProcessList() {
             {selected.exe_path && (
               <div>
                 <div className="text-xs text-[#8b949e] mb-1">{t('processList.path')}</div>
-                <div className="text-xs font-mono text-[#e6edf3] break-all bg-[#161b22] p-2 rounded">{selected.exe_path}</div>
+                <div className="text-xs font-mono text-[#e6edf3] break-all bg-[#161b22] p-2 rounded-sm">{selected.exe_path}</div>
               </div>
             )}
             {selected.flags.length > 0 && (
@@ -152,7 +152,7 @@ export function ProcessList() {
                 <div className="text-xs text-[#8b949e] mb-1">{t('processList.flags')}</div>
                 <div className="flex flex-wrap gap-1">
                   {selected.flags.map(f => (
-                    <span key={f} className="text-xs bg-[#21262d] text-[#8b949e] px-2 py-0.5 rounded">{f}</span>
+                    <span key={f} className="text-xs bg-[#21262d] text-[#8b949e] px-2 py-0.5 rounded-sm">{f}</span>
                   ))}
                 </div>
               </div>

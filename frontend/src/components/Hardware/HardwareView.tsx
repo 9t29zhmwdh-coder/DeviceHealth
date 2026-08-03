@@ -67,7 +67,7 @@ export function HardwareView() {
                       <span className="ml-2 text-xs text-[#8b949e]">{d.mount_point}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs bg-[#30363d] text-[#8b949e] px-2 py-0.5 rounded">{d.kind}</span>
+                      <span className="text-xs bg-[#30363d] text-[#8b949e] px-2 py-0.5 rounded-sm">{d.kind}</span>
                       <span className="text-xs text-[#8b949e]">{d.file_system}</span>
                     </div>
                   </div>

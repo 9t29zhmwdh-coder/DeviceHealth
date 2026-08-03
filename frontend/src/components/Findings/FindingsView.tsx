@@ -47,7 +47,7 @@ export function FindingsView() {
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder={t('findingsView.searchPlaceholder')}
-          className="w-full bg-[#21262d] border border-[#30363d] rounded-md px-3 py-1.5 text-sm text-[#e6edf3] placeholder-[#8b949e] focus:outline-none focus:border-[#58a6ff]"
+          className="w-full bg-[#21262d] border border-[#30363d] rounded-md px-3 py-1.5 text-sm text-[#e6edf3] placeholder-[#8b949e] focus:outline-hidden focus:border-[#58a6ff]"
         />
       </div>
 
@@ -81,10 +81,10 @@ function FindingCard({ finding: f, open, onToggle, labels }: {
     <div className="bg-[#161b22] border border-[#30363d] rounded-lg overflow-hidden">
       <button onClick={onToggle} className="w-full text-left p-4 hover:bg-[#21262d] transition-colors">
         <div className="flex items-start gap-3">
-          <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ background: color }} />
+          <div className="w-2 h-2 rounded-full mt-1.5 shrink-0" style={{ background: color }} />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-0.5">
-              <span className="text-xs font-medium px-1.5 py-0.5 rounded" style={{ color, background: color + '20' }}>
+              <span className="text-xs font-medium px-1.5 py-0.5 rounded-sm" style={{ color, background: color + '20' }}>
                 {labels[f.severity as Severity]}
               </span>
               <span className="text-xs text-[#8b949e]">{f.kind}</span>
@@ -103,7 +103,7 @@ function FindingCard({ finding: f, open, onToggle, labels }: {
           </div>
           <div>
             <div className="text-xs text-[#8b949e] mb-1">{t('findingsView.affectedItem')}</div>
-            <code className="text-xs bg-[#0d1117] text-[#79c0ff] px-2 py-1 rounded block">{f.affected_item}</code>
+            <code className="text-xs bg-[#0d1117] text-[#79c0ff] px-2 py-1 rounded-sm block">{f.affected_item}</code>
           </div>
           <div>
             <div className="text-xs text-[#8b949e] mb-1">{t('findingsView.recommendation')}</div>
