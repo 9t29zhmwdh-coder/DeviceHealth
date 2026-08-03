@@ -86,7 +86,7 @@ function SnapshotRow({ snapshot: s }: { snapshot: HealthSnapshot }) {
   const total = s.finding_counts.critical + s.finding_counts.high + s.finding_counts.medium
   return (
     <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-3 flex items-center gap-4">
-      <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm"
+      <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold text-sm"
         style={{ background: color + '20', color }}>
         {s.score}
       </div>

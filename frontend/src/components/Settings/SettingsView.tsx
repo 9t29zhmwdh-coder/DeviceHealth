@@ -44,12 +44,12 @@ export function SettingsView() {
           <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-4 space-y-4">
             <Field label={t('settings.ollamaUrl')}>
               <input value={draft.ollama_url} onChange={e => set('ollama_url', e.target.value)}
-                className="w-full bg-[#0d1117] border border-[#30363d] rounded-md px-3 py-2 text-sm text-[#e6edf3] focus:outline-none focus:border-[#58a6ff]" />
+                className="w-full bg-[#0d1117] border border-[#30363d] rounded-md px-3 py-2 text-sm text-[#e6edf3] focus:outline-hidden focus:border-[#58a6ff]" />
             </Field>
             <Field label={t('settings.model')}>
               <input value={draft.text_model} onChange={e => set('text_model', e.target.value)}
                 placeholder={t('settings.modelPlaceholder')}
-                className="w-full bg-[#0d1117] border border-[#30363d] rounded-md px-3 py-2 text-sm text-[#e6edf3] focus:outline-none focus:border-[#58a6ff]" />
+                className="w-full bg-[#0d1117] border border-[#30363d] rounded-md px-3 py-2 text-sm text-[#e6edf3] focus:outline-hidden focus:border-[#58a6ff]" />
             </Field>
             <div className="flex items-center gap-3">
               <button onClick={handleTestOllama} disabled={testing}
@@ -75,7 +75,7 @@ export function SettingsView() {
             <Field label={t('settings.scanInterval')}>
               <input type="number" min={5} max={1440} value={draft.scan_interval_minutes}
                 onChange={e => set('scan_interval_minutes', Number(e.target.value))}
-                className="w-32 bg-[#0d1117] border border-[#30363d] rounded-md px-3 py-2 text-sm text-[#e6edf3] focus:outline-none focus:border-[#58a6ff]" />
+                className="w-32 bg-[#0d1117] border border-[#30363d] rounded-md px-3 py-2 text-sm text-[#e6edf3] focus:outline-hidden focus:border-[#58a6ff]" />
             </Field>
           </div>
         </section>
@@ -102,7 +102,7 @@ export function SettingsView() {
             <Field label={t('settings.keepHistoryDays')}>
               <input type="number" min={1} max={365} value={draft.keep_history_days}
                 onChange={e => set('keep_history_days', Number(e.target.value))}
-                className="w-32 bg-[#0d1117] border border-[#30363d] rounded-md px-3 py-2 text-sm text-[#e6edf3] focus:outline-none focus:border-[#58a6ff]" />
+                className="w-32 bg-[#0d1117] border border-[#30363d] rounded-md px-3 py-2 text-sm text-[#e6edf3] focus:outline-hidden focus:border-[#58a6ff]" />
             </Field>
             <button onClick={() => api.cleanupHistory()}
               className="text-xs text-[#f85149] hover:underline">
@@ -138,7 +138,7 @@ function Toggle({ label, checked, onChange }: { label: string; checked: boolean;
       <span className="text-sm text-[#e6edf3]">{label}</span>
       <div onClick={() => onChange(!checked)}
         className={`w-10 h-5 rounded-full transition-colors relative ${checked ? 'bg-[#238636]' : 'bg-[#30363d]'}`}>
-        <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${checked ? 'translate-x-5' : 'translate-x-0.5'}`} />
+        <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${checked ? 'translate-x-5' : 'translate-x-0.5'}`} />
       </div>
     </label>
   )
