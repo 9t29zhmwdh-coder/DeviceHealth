@@ -146,3 +146,42 @@ pub fn detect_process_findings(processes: &[ProcessEntry], settings: &AppSetting
 
     findings
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Haelt die Einheit fest, in der `sysinfo` Speicher meldet.
+    ///
+    /// Der Code hier teilt `proc.memory()` durch 1024 * 1024 und nennt das
+    /// Ergebnis MB. Wechselt eine neue `sysinfo`-Version auf Kilobyte, ist
+    /// jeder Wert um Faktor 1024 zu klein, die Schwelle von 500 MB fuer
+    /// speicherhungrige Prozesse loest nie mehr aus, und der Nutzer sieht
+    /// einfach keine Befunde mehr. Nichts daran wuerde einen Compiler stoeren
+    /// oder einen Fehler ausloesen.
+    #[test]
+    fn sysinfo_meldet_speicher_in_bytes() {
+        let mut system = System::new_all();
+        system.refresh_all();
+
+        let gesamt = system.total_memory();
+        assert!(
+            gesamt > 1_000_000_000,
+            "Gesamtspeicher {gesamt} ist zu klein fuer eine Byte-Angabe. \
+             Bei Kilobyte laege der Wert etwa um Faktor 1024 darunter."
+        );
+        assert!(
+            gesamt < 100_000_000_000_000,
+            "Gesamtspeicher {gesamt} ist unplausibel gross"
+        );
+    }
+
+    /// Der Analysepfad muss ueberhaupt Prozesse finden. Eine leere Liste waere
+    /// kein Absturz, sondern eine leere Oberflaeche.
+    #[test]
+    fn die_prozessliste_ist_nicht_leer() {
+        let mut system = System::new_all();
+        system.refresh_all();
+        assert!(!system.processes().is_empty());
+    }
+}
