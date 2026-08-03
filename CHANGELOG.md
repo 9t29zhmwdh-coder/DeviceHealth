@@ -27,10 +27,6 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), [Semantic Vers
 
 - `thiserror` from `dh-core` and `date-fns` from the frontend. Both were declared and never used. `date-fns` had been proposed for a 3 to 4 bump.
 
-### Fixed
-
-- The changelog heading below said 1.0.10, but no 1.0.10 tag or release exists and no 1.0.11 entry ever followed. What shipped as v1.0.11 is what that entry describes.
-
 ---
 
 ## [1.1.0] - 2026-08-03
