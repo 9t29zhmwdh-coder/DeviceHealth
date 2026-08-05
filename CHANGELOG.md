@@ -6,6 +6,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), [Semantic Vers
 
 ---
 
+## [1.3.0] - 2026-08-05
+
+### Changed
+
+- `recharts` 2 to 3. This frontend uses three chart types from it: a pie chart and a radial bar chart on the dashboard, a line chart in the history view. All three were rendered in a real DOM under both versions with the same data and produced the same five paths, seven text elements and three SVG roots. Rendered in a DOM rather than server-side on purpose: version 3 builds the chart on the client and produces nothing server-side, which looks like a regression and is not.
+- TypeScript 5.9.3 to 7. No source or configuration change was needed. The bundle dropped from 654 kB to 631 kB.
+- `thiserror` 2.0.18 to 2.0.19. A patch release of the crate, but it moves `thiserror-impl` from `syn` 2.0 to `syn` 3.0, a major bump of a build-time proc-macro dependency arriving transitively.
+
+---
+
 ## [1.2.2] - 2026-08-05
 
 ### Changed
