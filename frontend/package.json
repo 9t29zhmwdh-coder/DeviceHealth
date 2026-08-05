@@ -13,7 +13,7 @@
     "@tauri-apps/plugin-shell": "^2",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "recharts": "^2",
+    "recharts": "^3.10.1",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
@@ -23,7 +23,7 @@
     "@vitejs/plugin-react": "^6.0.5",
     "postcss": "^8",
     "tailwindcss": "^4.3.3",
-    "typescript": "^5",
+    "typescript": "^7.0.2",
     "vite": "^8.2.0"
   }
 }
