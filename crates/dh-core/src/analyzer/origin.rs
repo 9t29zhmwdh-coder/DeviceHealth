@@ -16,6 +16,16 @@ pub enum Origin {
     ThirdParty,
 }
 
+/// Shows the home directory as `~`, so paths on screen and in screenshots do
+/// not carry the account name.
+pub fn tilde(path: &str) -> String {
+    let home = std::env::var("HOME").or_else(|_| std::env::var("USERPROFILE")).unwrap_or_default();
+    match path.strip_prefix(home.as_str()) {
+        Some(rest) if !home.is_empty() => format!("~{rest}"),
+        _ => path.to_string(),
+    }
+}
+
 pub fn origin_of(exe: &str) -> Origin {
     if let Some(app) = app_bundle_name(exe) {
         // Apple's own apps (Mail, Notes) live under /System/Applications and can be

@@ -103,6 +103,9 @@ pub fn run_full_analysis(settings: &AppSettings, lang: Lang) -> AnalysisResult {
 fn build_recommendations(processes: &[ProcessEntry], settings: &AppSettings, uptime_seconds: u64, lang: Lang) -> Vec<Recommendation> {
     let mut candidates: Vec<&ProcessEntry> = processes.iter()
         .filter(|p| p.can_disable && !matches!(p.category, ProcessCategory::System | ProcessCategory::Security))
+        // A daemon of the operating system is restarted by it at once; offering
+        // to quit it (coreduetd was offered) achieves nothing.
+        .filter(|p| p.exe_path.as_deref().map(origin::origin_of) != Some(origin::Origin::OperatingSystem))
         .filter(|p| p.is_telemetry || p.cpu_usage > settings.cpu_spike_threshold || p.memory_mb() > 1024.0)
         .collect();
     candidates.sort_by_key(|p| std::cmp::Reverse(p.memory_bytes));

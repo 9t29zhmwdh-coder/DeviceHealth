@@ -51,8 +51,10 @@ pub async fn get_processes(state: State<'_, AppState>, show_safe: bool) -> DhRes
             r.processes.clone()
         } else {
             r.processes.iter()
-                .filter(|p| !matches!(p.category,
-                    dh_core::models::process::ProcessCategory::System))
+                // "Safe" covers catalogued safe processes too (trustd, Spotlight),
+                // not only those classified as system.
+                .filter(|p| !matches!(p.category, dh_core::models::process::ProcessCategory::System)
+                    && !matches!(p.risk, dh_core::models::process::RiskLevel::Safe))
                 .cloned()
                 .collect()
         }

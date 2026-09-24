@@ -46,8 +46,8 @@ fn scan_plist_dir(dir: &str) -> Vec<AutostartEntry> {
                     AutostartEntry {
                         id: uuid::Uuid::new_v4().to_string(),
                         name: name.trim_end_matches(".plist").to_string(),
-                        command: e.path().to_string_lossy().to_string(),
-                        location: dir.to_string(),
+                        command: super::origin::tilde(&e.path().to_string_lossy()),
+                        location: super::origin::tilde(dir),
                         risk: classify_autostart_risk(&name),
                         description: None,
                         can_disable: !dir.contains("LaunchDaemons"),

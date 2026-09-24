@@ -5,7 +5,7 @@ use crate::models::{
     settings::AppSettings,
     Lang,
 };
-use super::{known_processes, origin::{origin_of, Origin}};
+use super::{known_processes, origin::{origin_of, tilde, Origin}};
 
 /// What a process is, who it belongs to and whether it may be quit.
 struct Classification {
@@ -48,7 +48,7 @@ pub fn analyze_processes(sys: &System, settings: &AppSettings, lang: Lang) -> Ve
             ProcessEntry {
                 pid: pid.as_u32(),
                 name,
-                exe_path,
+                exe_path: exe_path.map(|p| tilde(&p)),
                 cpu_usage: proc.cpu_usage(),
                 memory_bytes: proc.memory(),
                 status: format!("{:?}", proc.status()),
@@ -100,8 +100,8 @@ fn classify(name: &str, exe: Option<&str>, foreign_user: bool, lang: Lang) -> Cl
             ProcessCategory::Unknown,
             RiskLevel::Unknown,
             lang.pick(
-                format!("Installed outside the system and outside any app: {}. Check what installed it before removing anything.", exe.unwrap_or_default()),
-                format!("Ausserhalb des Systems und ausserhalb jeder App installiert: {}. Vor dem Entfernen prüfen, was ihn installiert hat.", exe.unwrap_or_default()),
+                format!("Installed outside the system and outside any app: {}. Check what installed it before removing anything.", tilde(exe.unwrap_or_default())),
+                format!("Ausserhalb des Systems und ausserhalb jeder App installiert: {}. Vor dem Entfernen prüfen, was ihn installiert hat.", tilde(exe.unwrap_or_default())),
             ),
             None,
             false,
