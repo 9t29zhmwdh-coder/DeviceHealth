@@ -62,8 +62,9 @@ pub struct ThermalInfo {
 }
 
 impl ThermalInfo {
-    pub fn is_hot(&self) -> bool {
-        self.temperature_celsius > 80.0
+    /// `limit` is the warning temperature from the settings; it used to be a fixed 80 °C.
+    pub fn is_hot(&self, limit: f32) -> bool {
+        self.temperature_celsius > limit
             || self.critical_threshold.map(|t| self.temperature_celsius > t * 0.9).unwrap_or(false)
     }
 }

@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 
+// `default` keeps stored settings readable when fields are added or removed.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(default)]
 pub struct AppSettings {
     pub ollama_url: String,
     pub text_model: String,
@@ -18,7 +20,7 @@ impl Default for AppSettings {
     fn default() -> Self {
         Self {
             ollama_url: "http://localhost:11434".to_string(),
-            text_model: "llama3".to_string(),
+            text_model: crate::ai::ollama::DEFAULT_MODEL.to_string(),
             auto_scan_on_startup: true,
             scan_interval_minutes: 60,
             show_safe_processes: false,

@@ -44,8 +44,9 @@ export function ProcessList() {
         p.name, p.description ?? null, p.cpu_usage, p.memory_bytes / 1024 / 1024
       )
       setExplanation(result)
-    } catch {
-      setExplanation(t('processList.aiUnavailable'))
+    } catch (e) {
+      // The backend says why (Ollama not running, model missing); a generic text hid that.
+      setExplanation(String(e) || t('processList.aiUnavailable'))
     } finally {
       setExplaining(false)
     }
@@ -93,8 +94,8 @@ export function ProcessList() {
                 ${selected?.pid === p.pid ? 'bg-[#161b22]' : ''}`}>
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5">
-                  {p.is_zombie && <span className="text-[10px] bg-[#f8514920] text-[#f85149] px-1 rounded-sm">Z</span>}
-                  {p.is_telemetry && <span className="text-[10px] bg-[#d2992220] text-[#d29922] px-1 rounded-sm">T</span>}
+                  {p.is_zombie && <span className="text-xs bg-[#f8514920] text-[#f85149] px-1 rounded-sm">Z</span>}
+                  {p.is_telemetry && <span className="text-xs bg-[#d2992220] text-[#d29922] px-1 rounded-sm">T</span>}
                   <span className="text-sm text-[#e6edf3] truncate">{p.name}</span>
                 </div>
                 {p.description && (
@@ -110,7 +111,7 @@ export function ProcessList() {
               </span>
               <div className="flex gap-1 flex-wrap">
                 {p.flags.slice(0, 2).map(f => (
-                  <span key={f} className="text-[9px] bg-[#30363d] text-[#8b949e] px-1 rounded-sm">{f}</span>
+                  <span key={f} className="text-xs bg-[#30363d] text-[#8b949e] px-1 rounded-sm">{f}</span>
                 ))}
               </div>
               <span className="text-xs text-[#8b949e]">▶</span>

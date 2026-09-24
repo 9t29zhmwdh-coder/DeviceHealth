@@ -3,12 +3,13 @@ use crate::models::{
     finding::{Finding, FindingKind, Severity},
     hardware::{DiskInfo, NetworkStat, SystemInfo, ThermalInfo},
     settings::AppSettings,
+    Lang,
 };
 
 pub fn build_system_info(sys: &System) -> SystemInfo {
     let cpu_brand = sys.cpus().first()
         .map(|c| c.brand().to_string())
-        .unwrap_or_else(|| "Unbekannt".to_string());
+        .unwrap_or_default();
     let cpu_freq = sys.cpus().first()
         .map(|c| c.frequency())
         .unwrap_or(0);
@@ -73,18 +74,24 @@ pub fn detect_hardware_findings(
     disks: &[DiskInfo],
     temps: &[ThermalInfo],
     settings: &AppSettings,
+    lang: Lang,
 ) -> Vec<Finding> {
     let mut findings = Vec::new();
 
     let mem_pct = sys.memory_used_pct();
     if mem_pct > settings.memory_high_threshold {
+        let used = sys.used_memory_bytes as f64 / 1024.0 / 1024.0;
+        let total = sys.total_memory_bytes as f64 / 1024.0 / 1024.0;
         findings.push(Finding::new(
             FindingKind::HighMemoryUsage,
             if mem_pct > 95.0 { Severity::Critical } else { Severity::High },
-            &format!("RAM-Auslastung: {:.1}%", mem_pct),
-            &format!("{:.0} MB von {:.0} MB belegt.", sys.used_memory_bytes as f64 / 1024.0 / 1024.0, sys.total_memory_bytes as f64 / 1024.0 / 1024.0),
+            &lang.pick(format!("Memory use: {mem_pct:.1}%"), format!("RAM-Auslastung: {mem_pct:.1}%")),
+            &lang.pick(format!("{used:.0} MB of {total:.0} MB in use."), format!("{used:.0} MB von {total:.0} MB belegt.")),
             "RAM",
-            "Beende nicht benötigte Anwendungen. Ein Neustart kann helfen, Arbeitsspeicher freizugeben.",
+            &lang.pick(
+                "Quit applications you do not need. A restart frees memory as well.",
+                "Beende nicht benötigte Anwendungen. Ein Neustart gibt ebenfalls Arbeitsspeicher frei.",
+            ),
         ));
     }
 
@@ -94,22 +101,31 @@ pub fn detect_hardware_findings(
             findings.push(Finding::new(
                 FindingKind::DiskNearlyFull,
                 if pct > 95.0 { Severity::Critical } else if pct > 90.0 { Severity::High } else { Severity::Medium },
-                &format!("Disk {} fast voll: {:.1}%", disk.name, pct),
-                &format!("Datenträger '{}' bei {:.1}% Kapazität.", disk.name, pct),
+                &lang.pick(format!("Disk {} nearly full: {pct:.1}%", disk.name), format!("Datenträger {} fast voll: {pct:.1}%", disk.name)),
+                &lang.pick(format!("'{}' is at {pct:.1}% of its capacity.", disk.name), format!("Datenträger '{}' bei {pct:.1}% Kapazität.", disk.name)),
                 &disk.name,
-                "Lösche nicht mehr benötigte Dateien oder verschiebe Daten auf externe Speicher.",
+                &lang.pick(
+                    "Delete files you no longer need or move data to external storage.",
+                    "Lösche nicht mehr benötigte Dateien oder verschiebe Daten auf externe Speicher.",
+                ),
             ));
         }
     }
 
-    for temp in temps.iter().filter(|t| t.is_hot()) {
+    for temp in temps.iter().filter(|t| t.is_hot(settings.temp_warning_celsius)) {
         findings.push(Finding::new(
             FindingKind::HighTemperature,
-            if temp.temperature_celsius > 90.0 { Severity::Critical } else { Severity::High },
+            if temp.temperature_celsius > settings.temp_warning_celsius + 10.0 { Severity::Critical } else { Severity::High },
             &format!("{}: {:.0}°C", temp.label, temp.temperature_celsius),
-            &format!("Komponente '{}' hat eine ungewöhnlich hohe Temperatur.", temp.label),
+            &lang.pick(
+                format!("'{}' is running unusually hot.", temp.label),
+                format!("Komponente '{}' hat eine ungewöhnlich hohe Temperatur.", temp.label),
+            ),
             &temp.label,
-            "Prüfe die Kühlung. Reinige Lüfter und stelle sicher, dass die Belüftung ausreicht.",
+            &lang.pick(
+                "Check the cooling: clean the fans and keep the vents free.",
+                "Prüfe die Kühlung: Lüfter reinigen und Lüftungsschlitze freihalten.",
+            ),
         ));
     }
 
@@ -118,10 +134,13 @@ pub fn detect_hardware_findings(
         findings.push(Finding::new(
             FindingKind::LongUptime,
             if uptime_days > 30 { Severity::Medium } else { Severity::Low },
-            &format!("System läuft seit {} Tagen ohne Neustart", uptime_days),
-            "Ein langer Betrieb ohne Neustart kann zu Speicherlecks, ausstehenden Updates und instabilem Verhalten führen.",
-            "Betriebszeit",
-            "Plane einen Neustart, um Systemressourcen freizugeben und Updates einzuspielen.",
+            &lang.pick(format!("Running for {uptime_days} days without a restart"), format!("System läuft seit {uptime_days} Tagen ohne Neustart")),
+            &lang.pick(
+                "Long uptimes leave pending updates uninstalled and let memory fragment.",
+                "Lange Laufzeiten lassen ausstehende Updates liegen und zerstückeln den Arbeitsspeicher.",
+            ),
+            &lang.pick("Uptime", "Betriebszeit"),
+            &lang.pick("Plan a restart to install updates and free resources.", "Plane einen Neustart, um Updates einzuspielen und Ressourcen freizugeben."),
         ));
     }
 

@@ -11,24 +11,6 @@ pub enum Severity {
 }
 
 impl Severity {
-    pub fn label(&self) -> &'static str {
-        match self {
-            Self::Critical => "Kritisch",
-            Self::High     => "Hoch",
-            Self::Medium   => "Mittel",
-            Self::Low      => "Niedrig",
-            Self::Info     => "Info",
-        }
-    }
-    pub fn color(&self) -> &'static str {
-        match self {
-            Self::Critical => "#f85149",
-            Self::High     => "#f0883e",
-            Self::Medium   => "#d29922",
-            Self::Low      => "#58a6ff",
-            Self::Info     => "#8b949e",
-        }
-    }
     pub fn score_penalty(&self) -> i32 {
         match self {
             Self::Critical => 15,
@@ -55,12 +37,6 @@ pub enum FindingKind {
     SecurityRisk,
     UnknownProcess,
     NetworkTelemetry,
-    CrashDetected,
-    DriverIssue,
-    MissingUpdate,
-    RamLeak,
-    OpenPort,
-    WeakSecurity,
 }
 
 impl FindingKind {
@@ -79,12 +55,6 @@ impl FindingKind {
             Self::SecurityRisk     => "🔒",
             Self::UnknownProcess   => "❓",
             Self::NetworkTelemetry => "🌐",
-            Self::CrashDetected    => "💥",
-            Self::DriverIssue      => "⚙️",
-            Self::MissingUpdate    => "📥",
-            Self::RamLeak          => "🧠",
-            Self::OpenPort         => "🔓",
-            Self::WeakSecurity     => "⚠️",
         }
     }
 }

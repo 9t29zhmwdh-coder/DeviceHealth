@@ -19,5 +19,9 @@ pub async fn cleanup_old_snapshots(pool: &SqlitePool, keep_days: u32) -> Result<
     )
     .execute(pool)
     .await?;
+    // Findings have no foreign key with cascade; without this they outlive their snapshot.
+    sqlx::query!("DELETE FROM findings WHERE snapshot_id NOT IN (SELECT id FROM health_snapshots)")
+        .execute(pool)
+        .await?;
     Ok(rows.rows_affected() as u32)
 }

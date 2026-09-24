@@ -1,29 +1,30 @@
-pub const EXPLAIN_PROCESS: &str = r#"
-You are a system administrator helping a non-technical user understand their computer.
-Explain the following process in simple German language (2-4 sentences).
-Include: what it does, whether it is safe, and whether it can be disabled.
+use crate::models::Lang;
 
-Process name: {name}
-Known description: {description}
-Current CPU usage: {cpu}%
-Memory usage: {memory_mb} MB
+/// One prompt per language: the answer should be in the language of the interface.
+pub fn explain_process(lang: Lang, name: &str, description: &str, cpu: f32, memory_mb: f64) -> String {
+    let (language, start) = match lang {
+        Lang::En => ("English", "This process"),
+        Lang::De => ("German (Swiss spelling, no ß)", "Dieser Prozess"),
+    };
+    format!(
+        "You are a system administrator helping a non-technical user understand their computer.\n\
+         Explain the following process in simple {language} (2 to 4 sentences): what it does, \
+         whether it is safe, and whether it can be quit or removed.\n\n\
+         Process name: {name}\n\
+         Known description: {description}\n\
+         Current CPU usage: {cpu:.1}%\n\
+         Memory usage: {memory_mb:.0} MB\n\n\
+         Answer in {language} only. Start with \"{start}\"."
+    )
+}
 
-Respond in German, be concise and clear. Start with "Dieser Prozess..."
-"#;
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-pub const ANALYZE_FINDINGS: &str = r#"
-You are a system health expert. Based on these system findings, provide a brief German-language summary (3-5 sentences) and the most important action the user should take.
-
-Findings:
-{findings}
-
-Respond in German. Be direct and actionable.
-"#;
-
-pub const SUGGEST_FIX: &str = r#"
-You are a helpful system administrator. Explain in simple German how to fix this issue.
-Keep it under 3 sentences. Be specific with steps.
-
-Issue: {title}
-Context: {context}
-"#;
+    #[test]
+    fn the_prompt_asks_for_the_interface_language() {
+        assert!(explain_process(Lang::En, "x", "", 0.0, 0.0).contains("simple English"));
+        assert!(explain_process(Lang::De, "x", "", 0.0, 0.0).contains("Dieser Prozess"));
+    }
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAnalysisStore } from './stores/analysisStore'
 import { useSettingsStore } from './stores/settingsStore'
 import { api, events } from './lib/tauri'
@@ -9,15 +9,37 @@ import { FindingsView } from './components/Findings/FindingsView'
 import { HardwareView } from './components/Hardware/HardwareView'
 import { HistoryView } from './components/History/HistoryView'
 import { SettingsView } from './components/Settings/SettingsView'
+import { AutostartView } from './components/Autostart/AutostartView'
 
-type Tab = 'dashboard' | 'processes' | 'findings' | 'hardware' | 'history' | 'settings'
+type Tab = 'dashboard' | 'processes' | 'findings' | 'autostart' | 'hardware' | 'history' | 'settings'
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('dashboard')
-  const { setRunning, setSnapshot, setOllamaOnline, loadAll, loadHistory, findings } = useAnalysisStore()
-  const { load: loadSettings } = useSettingsStore()
+  const { setRunning, setSnapshot, setOllamaOnline, loadAll, loadHistory, findings, autostart, runScan, snapshot, setShowSafe } = useAnalysisStore()
+  const { load: loadSettings, settings, loaded } = useSettingsStore()
   const t = useT()
   const { lang, toggle } = useLangStore()
+
+  // The start-up scan, the interval and the "show safe processes" default were
+  // settings without any effect.
+  useEffect(() => {
+    if (!loaded) return
+    setShowSafe(settings.show_safe_processes)
+    if (settings.auto_scan_on_startup) runScan()
+  }, [loaded])
+
+  useEffect(() => {
+    if (!loaded || settings.scan_interval_minutes <= 0) return
+    const id = setInterval(runScan, settings.scan_interval_minutes * 60_000)
+    return () => clearInterval(id)
+  }, [loaded, settings.scan_interval_minutes])
+
+  // Findings are written in the interface language; switching it rescans.
+  const firstLang = useRef(lang)
+  useEffect(() => {
+    if (lang !== firstLang.current && snapshot) runScan()
+    firstLang.current = lang
+  }, [lang])
 
   useEffect(() => {
     loadSettings()
@@ -70,6 +92,7 @@ export default function App() {
           {nav('dashboard', '📊', t('nav.dashboard'))}
           {nav('findings', '🔍', t('nav.findings'), criticalCount)}
           {nav('processes', '⚙️', t('nav.processes'))}
+          {nav('autostart', '🚀', t('nav.autostart'), autostart.length)}
           {nav('hardware', '💾', t('nav.hardware'))}
           {nav('history', '📈', t('nav.history'))}
           {nav('settings', '⚙️', t('nav.settings'))}
@@ -87,6 +110,7 @@ export default function App() {
         {tab === 'dashboard'  && <Dashboard onNavigate={setTab} />}
         {tab === 'findings'   && <FindingsView />}
         {tab === 'processes'  && <ProcessList />}
+        {tab === 'autostart'  && <AutostartView />}
         {tab === 'hardware'   && <HardwareView />}
         {tab === 'history'    && <HistoryView />}
         {tab === 'settings'   && <SettingsView />}

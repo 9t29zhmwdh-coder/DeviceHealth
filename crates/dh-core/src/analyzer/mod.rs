@@ -1,6 +1,7 @@
 pub mod hardware;
 pub mod known_processes;
 pub mod network;
+pub mod origin;
 pub mod processes;
 pub mod security;
 pub mod services;
@@ -11,9 +12,10 @@ use crate::models::{
     finding::Finding,
     hardware::{DiskInfo, HardwareReport, NetworkStat, ThermalInfo},
     health::{FindingCounts, HealthGrade, HealthSnapshot, calculate_health_score},
-    process::ProcessEntry,
-    recommendation::Recommendation,
+    process::{AutostartEntry, ProcessCategory, ProcessEntry, RiskLevel},
+    recommendation::{ActionKind, Recommendation},
     settings::AppSettings,
+    Lang,
 };
 
 pub struct AnalysisResult {
@@ -22,11 +24,20 @@ pub struct AnalysisResult {
     pub findings: Vec<Finding>,
     pub recommendations: Vec<Recommendation>,
     pub hardware: HardwareReport,
+    pub autostart: Vec<AutostartEntry>,
 }
 
-pub fn run_full_analysis(settings: &AppSettings) -> AnalysisResult {
+/// CPU usage is a difference between two readings. A single refresh left every
+/// process at 0 %, so no CPU spike was ever reported.
+fn measured_system() -> System {
     let mut sys = System::new_all();
+    std::thread::sleep(sysinfo::MINIMUM_CPU_UPDATE_INTERVAL.max(std::time::Duration::from_millis(500)));
     sys.refresh_all();
+    sys
+}
+
+pub fn run_full_analysis(settings: &AppSettings, lang: Lang) -> AnalysisResult {
+    let sys = measured_system();
 
     let disks = Disks::new_with_refreshed_list();
     let components = Components::new_with_refreshed_list();
@@ -37,14 +48,15 @@ pub fn run_full_analysis(settings: &AppSettings) -> AnalysisResult {
     let hw_temps: Vec<ThermalInfo> = components.list().iter().map(hardware::build_thermal_info).collect();
     let hw_network: Vec<NetworkStat> = networks.iter().map(|(name, data)| hardware::build_network_stat(name, data)).collect();
 
-    let processes = processes::analyze_processes(&sys, settings);
+    let processes = processes::analyze_processes(&sys, settings, lang);
+    let autostart = services::get_autostart_entries();
     let mut findings = Vec::new();
 
-    findings.extend(processes::detect_process_findings(&processes, settings));
-    findings.extend(hardware::detect_hardware_findings(&hw_system, &hw_disks, &hw_temps, settings));
-    findings.extend(network::detect_network_findings(&hw_network, &processes));
-    findings.extend(security::detect_security_findings(&processes, &hw_system));
-    findings.extend(services::detect_autostart_findings());
+    findings.extend(processes::detect_process_findings(&processes, settings, lang));
+    findings.extend(hardware::detect_hardware_findings(&hw_system, &hw_disks, &hw_temps, settings, lang));
+    findings.extend(network::detect_network_findings(&hw_network, &processes, lang));
+    findings.extend(security::detect_security_findings(&processes, lang));
+    findings.extend(services::detect_autostart_findings(&autostart, lang));
 
     findings.sort_by_key(|f| std::cmp::Reverse(f.severity.score_penalty()));
 
@@ -69,7 +81,7 @@ pub fn run_full_analysis(settings: &AppSettings) -> AnalysisResult {
         timestamp: chrono::Utc::now(),
     };
 
-    let recommendations = build_recommendations(&findings, &processes);
+    let recommendations = build_recommendations(&processes, settings, uptime, lang);
 
     AnalysisResult {
         snapshot,
@@ -82,35 +94,52 @@ pub fn run_full_analysis(settings: &AppSettings) -> AnalysisResult {
             temperatures: hw_temps,
             network: hw_network,
         },
+        autostart,
     }
 }
 
-fn build_recommendations(findings: &[Finding], processes: &[ProcessEntry]) -> Vec<Recommendation> {
-    let mut recs = Vec::new();
+/// Processes worth quitting, largest first: telemetry, and apps that use a lot
+/// of CPU or memory right now. System processes are never offered.
+fn build_recommendations(processes: &[ProcessEntry], settings: &AppSettings, uptime_seconds: u64, lang: Lang) -> Vec<Recommendation> {
+    let mut candidates: Vec<&ProcessEntry> = processes.iter()
+        .filter(|p| p.can_disable && !matches!(p.category, ProcessCategory::System | ProcessCategory::Security))
+        .filter(|p| p.is_telemetry || p.cpu_usage > settings.cpu_spike_threshold || p.memory_mb() > 1024.0)
+        .collect();
+    candidates.sort_by_key(|p| std::cmp::Reverse(p.memory_bytes));
 
-    for finding in findings.iter().filter(|f| f.can_auto_fix) {
-        use crate::models::recommendation::{ActionKind, Recommendation};
-        use crate::models::process::RiskLevel;
-        recs.push(Recommendation::new(
-            &format!("Behebe: {}", finding.title),
-            &finding.recommendation,
-            ActionKind::NoAction,
-            &finding.affected_item,
-            RiskLevel::Low,
-        ));
-    }
-
-    for proc in processes.iter().filter(|p| p.is_telemetry && p.can_disable) {
-        use crate::models::recommendation::{ActionKind, Recommendation};
-        use crate::models::process::RiskLevel;
-        recs.push(Recommendation::new(
-            &format!("Telemetrie beenden: {}", proc.name),
-            proc.description.as_deref().unwrap_or("Bekannter Telemetrie-Prozess"),
+    let mut recs: Vec<Recommendation> = candidates.into_iter().take(10).map(|p| {
+        let owner = p.vendor.as_deref().unwrap_or(&p.name);
+        let why = if p.is_telemetry {
+            lang.pick("sends usage data to its vendor", "sendet Nutzungsdaten an den Hersteller")
+        } else {
+            lang.pick(
+                format!("uses {:.0}% CPU and {:.0} MB of memory", p.cpu_usage, p.memory_mb()),
+                format!("braucht {:.0}% CPU und {:.0} MB Arbeitsspeicher", p.cpu_usage, p.memory_mb()),
+            )
+        };
+        Recommendation::new(
+            &lang.pick(format!("Quit {} ({owner})", p.name), format!("{} beenden ({owner})", p.name)),
+            &lang.pick(
+                format!("{} {why}. Unsaved work in it is lost; the app may start it again.", p.name),
+                format!("{} {why}. Ungesicherte Arbeit darin geht verloren; die App kann ihn wieder starten.", p.name),
+            ),
             ActionKind::KillProcess,
-            &proc.pid.to_string(),
-            RiskLevel::Low,
+            &p.pid.to_string(),
+            p.risk.clone(),
+        )
+    }).collect();
+
+    if uptime_seconds > 14 * 86400 {
+        recs.push(Recommendation::new(
+            &lang.pick("Restart the computer", "Computer neu starten"),
+            &lang.pick(
+                "A restart installs pending updates and frees memory. The app does not do this for you.",
+                "Ein Neustart spielt ausstehende Updates ein und gibt Speicher frei. Die App macht das nicht für dich.",
+            ),
+            ActionKind::NoAction,
+            "",
+            RiskLevel::Safe,
         ));
     }
-
     recs
 }

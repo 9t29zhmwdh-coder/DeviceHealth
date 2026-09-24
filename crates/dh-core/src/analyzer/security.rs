@@ -1,88 +1,82 @@
 use crate::models::{
     finding::{Finding, FindingKind, Severity},
-    hardware::SystemInfo,
     process::{ProcessEntry, ProcessCategory, RiskLevel},
+    Lang,
 };
 
-pub fn detect_security_findings(processes: &[ProcessEntry], _sys: &SystemInfo) -> Vec<Finding> {
+/// Whole name parts only: "miner" inside "examiner" is not a cryptominer.
+fn looks_like_miner(name: &str) -> bool {
+    const MINERS: &[&str] = &["coinminer", "miner", "xmrig", "cryptonight", "ethminer"];
+    name.to_lowercase()
+        .split(|c: char| !c.is_alphanumeric())
+        .any(|part| MINERS.contains(&part))
+}
+
+pub fn detect_security_findings(processes: &[ProcessEntry], lang: Lang) -> Vec<Finding> {
     let mut findings = Vec::new();
 
-    let high_risk: Vec<&ProcessEntry> = processes.iter()
-        .filter(|p| matches!(p.risk, RiskLevel::Critical))
-        .collect();
-
-    if !high_risk.is_empty() {
-        for proc in &high_risk {
-            findings.push(Finding::new(
-                FindingKind::SecurityRisk,
-                Severity::Critical,
-                &format!("Sicherheitsrisiko: {}", proc.name),
-                &format!("Prozess '{}' wurde als kritisches Sicherheitsrisiko eingestuft.", proc.name),
-                &proc.name,
-                "Beende diesen Prozess sofort und führe einen Virenscan durch.",
-            ));
-        }
-    }
-
-    let unknown_high_cpu: Vec<&ProcessEntry> = processes.iter()
-        .filter(|p| matches!(p.category, ProcessCategory::Unknown) && p.cpu_usage > 15.0)
-        .collect();
-
-    for proc in &unknown_high_cpu {
-        findings.push(Finding::new(
-            FindingKind::UnknownProcess,
-            Severity::Medium,
-            &format!("Unbekannter Prozess mit hoher CPU: {} ({:.1}%)", proc.name, proc.cpu_usage),
-            &format!("Prozess '{}' ist unbekannt und verbraucht viele CPU-Ressourcen.", proc.name),
-            &proc.name,
-            "Recherchiere diesen Prozess. Bei Unklarheit: Task-Manager öffnen und Prozess beenden.",
-        ));
-    }
-
-    let suspicious_names: Vec<&ProcessEntry> = processes.iter()
-        .filter(|p| {
-            let n = p.name.to_lowercase();
-            n.contains("coinminer") || n.contains("miner") || n.contains("xmrig")
-                || n.contains("cryptonight") || n.contains("ethminer")
-        })
-        .collect();
-
-    for proc in &suspicious_names {
+    for proc in processes.iter().filter(|p| matches!(p.risk, RiskLevel::Critical)) {
         findings.push(Finding::new(
             FindingKind::SecurityRisk,
             Severity::Critical,
-            &format!("Möglicher Cryptominer: {}", proc.name),
-            "Dieser Prozess entspricht bekannten Mustern von Kryptowährungs-Mining-Malware.",
+            &lang.pick(format!("Security risk: {}", proc.name), format!("Sicherheitsrisiko: {}", proc.name)),
+            &lang.pick(
+                format!("'{}' is rated a critical security risk.", proc.name),
+                format!("Prozess '{}' wurde als kritisches Sicherheitsrisiko eingestuft.", proc.name),
+            ),
             &proc.name,
-            "Beende diesen Prozess SOFORT und führe einen vollständigen Virenscan durch.",
+            &lang.pick("Quit it and run a malware scan.", "Beende ihn und führe einen Malware-Scan durch."),
+        ));
+    }
+
+    let unknown_busy = processes.iter()
+        .filter(|p| matches!(p.category, ProcessCategory::Unknown) && p.cpu_usage > 15.0);
+    for proc in unknown_busy {
+        findings.push(Finding::new(
+            FindingKind::UnknownProcess,
+            Severity::Medium,
+            &lang.pick(
+                format!("Unknown process with high CPU: {} ({:.1}%)", proc.name, proc.cpu_usage),
+                format!("Unbekannter Prozess mit hoher CPU: {} ({:.1}%)", proc.name, proc.cpu_usage),
+            ),
+            &lang.pick(
+                format!("'{}' belongs to no known app and uses a lot of CPU.", proc.name),
+                format!("Prozess '{}' gehört zu keiner bekannten App und verbraucht viel CPU.", proc.name),
+            ),
+            &proc.name,
+            &lang.pick(
+                "Look up where its file lives. If you cannot place it, quit it and watch whether it returns.",
+                "Prüfe, wo seine Datei liegt. Kannst du ihn nicht zuordnen, beende ihn und beobachte, ob er wiederkommt.",
+            ),
+        ));
+    }
+
+    for proc in processes.iter().filter(|p| looks_like_miner(&p.name)) {
+        findings.push(Finding::new(
+            FindingKind::SecurityRisk,
+            Severity::Critical,
+            &lang.pick(format!("Possible cryptominer: {}", proc.name), format!("Möglicher Cryptominer: {}", proc.name)),
+            &lang.pick(
+                "The name matches known cryptocurrency mining malware.",
+                "Der Name entspricht bekannter Kryptowährungs-Mining-Malware.",
+            ),
+            &proc.name,
+            &lang.pick("Quit it now and run a full malware scan.", "Beende ihn sofort und führe einen vollständigen Malware-Scan durch."),
         ));
     }
 
     findings
 }
 
-pub fn get_open_ports() -> Vec<u16> {
-    let output = if cfg!(target_os = "windows") {
-        std::process::Command::new("netstat").args(["-an", "-p", "TCP"]).output()
-    } else {
-        std::process::Command::new("ss").args(["-tlnp"]).output()
-    };
+#[cfg(test)]
+mod tests {
+    use super::looks_like_miner;
 
-    let text = output.ok()
-        .and_then(|o| String::from_utf8(o.stdout).ok())
-        .unwrap_or_default();
-
-    let re = once_cell::sync::Lazy::new(|| regex::Regex::new(r":(\d{2,5})\s").unwrap());
-    re.find_iter(&text)
-        .filter_map(|m| m.as_str().trim_matches(':').trim().parse::<u16>().ok())
-        .collect()
-}
-
-mod once_cell {
-    pub mod sync {
-        pub use once_cell::sync::Lazy;
+    #[test]
+    fn miner_names_match_whole_parts_only() {
+        assert!(looks_like_miner("xmrig"));
+        assert!(looks_like_miner("coin-miner"));
+        assert!(!looks_like_miner("QuickLookExaminer"));
+        assert!(!looks_like_miner("determiner"));
     }
-}
-mod regex {
-    pub use regex::Regex;
 }

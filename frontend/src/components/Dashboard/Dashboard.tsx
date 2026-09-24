@@ -1,33 +1,23 @@
 import { RadialBarChart, RadialBar, ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts'
 import { useAnalysisStore } from '../../stores/analysisStore'
-import { api, gradeColor, gradeLabel, severityColor, uptimeHuman, formatBytes, type Severity } from '../../lib/tauri'
+import { Recommendations } from './Recommendations'
+import { gradeColor, gradeLabel, severityColor, uptimeHuman, formatBytes, type Severity } from '../../lib/tauri'
 import { useT, dateLocale } from '../../lib/i18n'
 
-type Tab = 'dashboard' | 'processes' | 'findings' | 'hardware' | 'history' | 'settings'
+type Tab = 'dashboard' | 'processes' | 'findings' | 'autostart' | 'hardware' | 'history' | 'settings'
 interface Props { onNavigate: (tab: Tab) => void }
 
 const SEVERITY_ORDER: Severity[] = ['Critical', 'High', 'Medium', 'Low', 'Info']
 
 export function Dashboard({ onNavigate }: Props) {
-  const { snapshot, findings, running, setRunning, setSnapshot, loadAll, ollamaOnline, setOllamaOnline } = useAnalysisStore()
+  const { snapshot, findings, running, runScan, ollamaOnline } = useAnalysisStore()
   const t = useT()
   const SEVERITY_LABELS: Record<Severity, string> = {
     Critical: t('severity.Critical'), High: t('severity.High'), Medium: t('severity.Medium'),
     Low: t('severity.Low'), Info: t('severity.Info'),
   }
 
-  const handleScan = async () => {
-    setRunning(true)
-    try {
-      const snap = await api.runAnalysis()
-      setSnapshot(snap)
-      await loadAll()
-    } finally {
-      setRunning(false)
-    }
-    const ok = await api.checkOllama().catch(() => false)
-    setOllamaOnline(ok)
-  }
+  const handleScan = () => { runScan() }
 
   const score = snapshot?.score ?? null
   const grade = snapshot?.grade ?? null
@@ -152,6 +142,8 @@ export function Dashboard({ onNavigate }: Props) {
               </button>
             </div>
           </div>
+
+          <Recommendations />
 
           {/* Top Findings */}
           {findings.filter(f => f.severity === 'Critical' || f.severity === 'High').length > 0 && (

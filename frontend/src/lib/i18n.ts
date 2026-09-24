@@ -17,6 +17,18 @@ const translations: Record<Lang, Dict> = {
       hardware: 'Hardware',
       history: 'History',
       settings: 'Settings',
+      autostart: 'Autostart',
+    },
+    recommendations: {
+      title: 'Recommendations',
+      quitButton: 'Quit',
+      cancel: 'Cancel',
+      quit: '{name} was asked to quit.',
+    },
+    autostart: {
+      title: 'Autostart',
+      hint: 'Programs that start on their own at login or boot. DeviceHealth lists them so you can recognise leftovers; to remove one, delete its entry in System Settings (Login Items) or remove the file shown here.',
+      empty: 'No autostart entries found. On Windows the registry and the Startup folder are not read yet.',
     },
     severity: {
       Critical: 'Critical', High: 'High', Medium: 'Medium', Low: 'Low', Info: 'Info',
@@ -129,6 +141,18 @@ const translations: Record<Lang, Dict> = {
       hardware: 'Hardware',
       history: 'Verlauf',
       settings: 'Einstellungen',
+      autostart: 'Autostart',
+    },
+    recommendations: {
+      title: 'Empfehlungen',
+      quitButton: 'Beenden',
+      cancel: 'Abbrechen',
+      quit: '{name} wurde zum Beenden aufgefordert.',
+    },
+    autostart: {
+      title: 'Autostart',
+      hint: 'Programme, die beim Anmelden oder Hochfahren von selbst starten. DeviceHealth listet sie, damit du Überbleibsel erkennst; zum Entfernen den Eintrag in den Systemeinstellungen (Anmeldeobjekte) löschen oder die hier gezeigte Datei entfernen.',
+      empty: 'Keine Autostart-Einträge gefunden. Unter Windows werden Registry und Autostart-Ordner noch nicht gelesen.',
     },
     severity: {
       Critical: 'Kritisch', High: 'Hoch', Medium: 'Mittel', Low: 'Niedrig', Info: 'Info',
@@ -241,8 +265,13 @@ interface LangState {
   toggle: () => void
 }
 
+// The first start follows the system language; the toggle is remembered after that.
+function systemLang(): Lang {
+  return navigator.language.toLowerCase().startsWith('de') ? 'de' : 'en'
+}
+
 export const useLangStore = create<LangState>((set) => ({
-  lang: (localStorage.getItem(STORAGE_KEY) as Lang) || 'en',
+  lang: (localStorage.getItem(STORAGE_KEY) as Lang) || systemLang(),
   setLang: (lang) => {
     localStorage.setItem(STORAGE_KEY, lang)
     set({ lang })

@@ -10,28 +10,6 @@ pub enum RiskLevel {
     Unknown,
 }
 
-impl RiskLevel {
-    pub fn label(&self) -> &'static str {
-        match self {
-            Self::Safe     => "Sicher",
-            Self::Low      => "Niedrig",
-            Self::Medium   => "Mittel",
-            Self::High     => "Hoch",
-            Self::Critical => "Kritisch",
-            Self::Unknown  => "Unbekannt",
-        }
-    }
-    pub fn color(&self) -> &'static str {
-        match self {
-            Self::Safe     => "#3fb950",
-            Self::Low      => "#79c0ff",
-            Self::Medium   => "#d29922",
-            Self::High     => "#f0883e",
-            Self::Critical => "#f85149",
-            Self::Unknown  => "#8b949e",
-        }
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum ProcessCategory {
@@ -46,27 +24,11 @@ pub enum ProcessCategory {
     Media,
     Network,
     Zombie,
+    /// Belongs to an installed application; `vendor` holds the app's name.
+    Application,
     Unknown,
 }
 
-impl ProcessCategory {
-    pub fn label(&self) -> &'static str {
-        match self {
-            Self::System      => "System",
-            Self::Security    => "Sicherheit",
-            Self::Browser     => "Browser",
-            Self::Utility     => "Dienstprogramm",
-            Self::Telemetry   => "Telemetrie",
-            Self::Bloatware   => "Bloatware",
-            Self::Gaming      => "Gaming",
-            Self::Development => "Entwicklung",
-            Self::Media       => "Medien",
-            Self::Network     => "Netzwerk",
-            Self::Zombie      => "Zombie",
-            Self::Unknown     => "Unbekannt",
-        }
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProcessEntry {
@@ -102,16 +64,4 @@ pub struct AutostartEntry {
     pub risk: RiskLevel,
     pub description: Option<String>,
     pub can_disable: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct NetworkConnection {
-    pub protocol: String,
-    pub local_addr: String,
-    pub remote_addr: String,
-    pub state: String,
-    pub pid: Option<u32>,
-    pub process_name: Option<String>,
-    pub is_telemetry: bool,
-    pub remote_host: Option<String>,
 }
