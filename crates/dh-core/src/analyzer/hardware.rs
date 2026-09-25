@@ -52,7 +52,7 @@ pub fn build_disk_info(disk: &Disk) -> DiskInfo {
 pub fn build_thermal_info(comp: &sysinfo::Component) -> ThermalInfo {
     ThermalInfo {
         label: comp.label().to_string(),
-        temperature_celsius: comp.temperature().unwrap_or(0.0),
+        temperature_celsius: comp.temperature().unwrap_or(f32::NAN), // no reading: dropped by the plausibility filter, not shown as 0 °C
         critical_threshold: comp.critical(),
     }
 }

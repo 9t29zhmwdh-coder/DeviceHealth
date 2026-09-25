@@ -59,14 +59,14 @@ fremd ist.
 | Funktion | Beschreibung |
 |---|---|
 | **Gesundheitsscore** | Numerische Bewertung 0 bis 100 mit Note (Ausgezeichnet → Kritisch) |
-| **Prozess-Analyse** | Erkennt Bloatware, Telemetrie, Zombie-Prozesse, CPU-Spikes, RAM-Leaks |
+| **Prozess-Analyse** | Sagt zu jedem Prozess, woher er kommt: Teil des Betriebssystems, gehört zu App X (samt Helfern) oder ausserhalb von beidem installiert. Von rund 750 Prozessen auf einem typischen Mac bleiben etwa 40, die nicht zum System gehören. Markiert ausserdem Bloatware, Telemetrie, Zombies, CPU-Spitzen und hohen Speicherverbrauch |
 | **Befunde** | Kategorisierte Probleme (Kritisch / Hoch / Mittel / Niedrig / Info) mit Lösungsempfehlungen |
-| **Hardware-Monitor** | CPU, RAM, Festplattennutzung, Temperaturen, Netzwerk-I/O |
-| **Autostart-Erkennung** | Scannt LaunchAgents (macOS) und systemd-Units (Linux) auf unnötige Einträge |
-| **Sicherheitsbefunde** | Verdächtige Prozesse, offene Risiken, Treiberfehler, fehlende Updates |
+| **Hardware-Monitor** | CPU, RAM, Festplattennutzung, Temperaturen (soweit das System sie meldet; unplausible Sensorwerte werden verworfen), Netzwerk-I/O |
+| **Autostart-Erkennung** | Listet LaunchAgents und LaunchDaemons (macOS) sowie aktive systemd-Units (Linux) in einer eigenen Ansicht. Nur Anzeige: Entfernen geht in den Systemeinstellungen oder durch Löschen der gezeigten Datei |
+| **Sicherheitsbefunde** | Prozesse mit ungewöhnlichen Namen, bekannte Cryptominer-Namen, unbekannte Prozesse mit hoher CPU. Kein Virenscanner, keine Treiber- oder Update-Prüfung |
 | **KI-Erklärungen** | Ollama erklärt jeden Prozess in Klartext: Ergebnisse lokal gecacht |
 | **Verlauf** | Score-Trend und System-Snapshots über die Zeit mit Diagrammen |
-| **Empfehlungen** | Umsetzbare Vorschläge mit Risikolevel: Ein-Klick mit Bestätigung |
+| **Empfehlungen** | Prozesse, die sich zu beenden lohnen (Telemetrie, Apps mit hoher CPU oder viel Speicher), jeweils mit „Beenden“-Knopf hinter einer Bestätigung. Systemprozesse werden nie angeboten |
 
 ---
 
@@ -87,7 +87,7 @@ git clone https://github.com/9t29zhmwdh-coder/DeviceHealth
 cd DeviceHealth
 
 # Optional: KI-Modell für Prozess-Erklärungen herunterladen
-ollama pull llama3
+ollama pull qwen3.5:4b
 
 cd frontend && npm install && cd ..
 cargo tauri dev

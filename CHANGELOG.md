@@ -6,6 +6,39 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), [Semantic Vers
 
 ---
 
+## [1.4.0] - 2026-09-25
+
+The README promised things the app did not do. This release makes them true or takes them out.
+
+### Added
+
+- **Where each process comes from.** Every process is placed by the path of its executable: part of the operating system, belongs to app X (helpers report their app), or installed outside both. On a Mac with about 750 processes, 679 of the 693 non-catalogued ones used to be "Unknown"; now around 40 remain that are not system, each with an owner.
+- **Recommendations are shown**, with a "Quit" button behind a confirmation dialog. They were computed on every scan and displayed nowhere. The process must still carry the same name (PIDs are reused), and system processes are never offered.
+- **Autostart view** listing LaunchAgents, LaunchDaemons and systemd units. Before, the scan only fed a "more than 30 entries" finding.
+- Findings, process descriptions, recommendations and AI explanations in English or German, following the interface language; switching the language rescans. The UI starts in the system language.
+- CLI command `autostart`; the CLI follows `LANG`.
+
+### Fixed
+
+- **CPU per process was always 0 %.** sysinfo needs two readings; the scan took one, so no CPU spike was ever reported.
+- Settings without effect now work: scan on start-up, scan interval, "show safe processes", temperature warning limit, history retention (old snapshots and their findings are deleted).
+- Temperature sensors reporting nonsense (Apple Silicon sends values like -9201 °C) are dropped instead of shown; a missing reading no longer appears as 0 °C.
+- "miner" inside a longer name ("QuickLookExaminer") no longer counts as a cryptominer.
+- AI explanations: `num_ctx`, `think: false`, low temperature, default model `qwen3.5:4b`; errors are shown instead of a generic text; the cache is kept per language and model.
+- Paths show the home directory as `~`.
+
+### Removed
+
+- Finding kinds that were never produced (driver errors, missing updates, RAM leaks, open ports, crashes, weak security) and the README claims for them.
+- `get_open_ports` and `get_active_connections_text`, which called `ss` (not present on macOS) and were never used; two unused AI methods.
+
+### Security
+
+- rustls 0.23.45 (RUSTSEC-2026-0285, TLS 1.3 handshake messages accepted across encryption levels; affects the Ollama connection when it uses HTTPS).
+- Content security policy for the window (was `null`), ad-hoc signing identity on macOS, nanoid fix in the frontend lockfile.
+
+---
+
 ## [1.3.1] - 2026-08-27
 
 ### Changed

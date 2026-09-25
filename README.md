@@ -56,14 +56,14 @@ explanations only earn their keep when the process list is unfamiliar.
 | Feature | Description |
 |---|---|
 | **Health Score** | Numerical 0 to 100 rating with grade (Excellent → Critical) |
-| **Process Analysis** | Detects bloatware, telemetry, zombie processes, CPU spikes, RAM leaks |
+| **Process Analysis** | Says for every process where it comes from: part of the operating system, belongs to app X (including its helpers), or installed outside both. Of about 750 processes on a typical Mac, around 40 are left that are not system. Also flags bloatware, telemetry, zombies, CPU spikes and high memory use |
 | **Findings** | Categorized issues (Critical / High / Medium / Low / Info) with fix recommendations |
-| **Hardware Monitor** | CPU, RAM, disk usage, temperatures, network I/O |
-| **Autostart Detection** | Scans LaunchAgents (macOS) and systemd units (Linux) for unnecessary entries |
-| **Security Findings** | Suspicious processes, open risks, driver errors, missing updates |
+| **Hardware Monitor** | CPU, RAM, disk usage, temperatures (where the system reports them; implausible sensor values are dropped), network I/O |
+| **Autostart Detection** | Lists LaunchAgents and LaunchDaemons (macOS) and enabled systemd units (Linux) in their own view. Listing only: removing an entry is done in System Settings or by deleting the file shown |
+| **Security Findings** | Processes with unusual names, known cryptominer names, unknown processes with high CPU. No virus scanner, no driver or update checks |
 | **AI Explanations** | Ollama explains every process in plain language: results cached locally |
 | **History** | Score trend and system snapshots over time with charts |
-| **Smart Recommendations** | Actionable suggestions with risk level: one-click with confirmation |
+| **Recommendations** | Processes worth quitting (telemetry, apps with high CPU or memory), each with a "Quit" button behind a confirmation. System processes are never offered |
 
 ---
 
@@ -84,7 +84,7 @@ git clone https://github.com/9t29zhmwdh-coder/DeviceHealth
 cd DeviceHealth
 
 # Optional: pull AI model for process explanations
-ollama pull llama3
+ollama pull qwen3.5:4b
 
 cd frontend && npm install && cd ..
 cargo tauri dev

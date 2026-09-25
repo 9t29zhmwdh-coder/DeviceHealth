@@ -45,7 +45,11 @@ pub fn run_full_analysis(settings: &AppSettings, lang: Lang) -> AnalysisResult {
 
     let hw_system = hardware::build_system_info(&sys);
     let hw_disks: Vec<DiskInfo> = disks.list().iter().map(hardware::build_disk_info).collect();
-    let hw_temps: Vec<ThermalInfo> = components.list().iter().map(hardware::build_thermal_info).collect();
+    // Apple Silicon reports some sensors with nonsense such as -9201 °C.
+    let hw_temps: Vec<ThermalInfo> = components.list().iter()
+        .map(hardware::build_thermal_info)
+        .filter(|t| (-40.0..=150.0).contains(&t.temperature_celsius))
+        .collect();
     let hw_network: Vec<NetworkStat> = networks.iter().map(|(name, data)| hardware::build_network_stat(name, data)).collect();
 
     let processes = processes::analyze_processes(&sys, settings, lang);

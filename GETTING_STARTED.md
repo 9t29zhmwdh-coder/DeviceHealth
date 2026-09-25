@@ -47,7 +47,7 @@ Open your terminal in the extracted/cloned folder (e.g. `cd C:\Projects\DeviceHe
 
 ```powershell
 # Optional: pull AI model for process explanations
-ollama pull llama3
+ollama pull qwen3.5:4b
 
 cd frontend
 npm install
@@ -102,7 +102,7 @@ git clone https://github.com/9t29zhmwdh-coder/DeviceHealth.git
 cd DeviceHealth
 
 # Optional: pull AI model for process explanations
-ollama pull llama3
+ollama pull qwen3.5:4b
 
 cd frontend && npm install && cd ..
 cargo tauri dev
@@ -155,7 +155,7 @@ git clone https://github.com/9t29zhmwdh-coder/DeviceHealth.git
 cd DeviceHealth
 
 # Optional: pull AI model for process explanations
-ollama pull llama3
+ollama pull qwen3.5:4b
 
 cd frontend && npm install && cd ..
 cargo tauri dev
