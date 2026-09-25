@@ -1,6 +1,7 @@
 use crate::models::{
     finding::{Finding, FindingKind, Severity},
     process::{AutostartEntry, RiskLevel},
+    Lang,
 };
 
 pub fn get_autostart_entries() -> Vec<AutostartEntry> {
@@ -45,8 +46,8 @@ fn scan_plist_dir(dir: &str) -> Vec<AutostartEntry> {
                     AutostartEntry {
                         id: uuid::Uuid::new_v4().to_string(),
                         name: name.trim_end_matches(".plist").to_string(),
-                        command: e.path().to_string_lossy().to_string(),
-                        location: dir.to_string(),
+                        command: super::origin::tilde(&e.path().to_string_lossy()),
+                        location: super::origin::tilde(dir),
                         risk: classify_autostart_risk(&name),
                         description: None,
                         can_disable: !dir.contains("LaunchDaemons"),
@@ -84,23 +85,24 @@ fn get_systemd_autostart() -> Vec<AutostartEntry> {
         .unwrap_or_default()
 }
 
-pub fn detect_autostart_findings() -> Vec<Finding> {
-    let entries = get_autostart_entries();
+pub fn detect_autostart_findings(entries: &[AutostartEntry], lang: Lang) -> Vec<Finding> {
     let mut findings = Vec::new();
 
     let high_risk: Vec<&AutostartEntry> = entries.iter()
         .filter(|e| matches!(e.risk, RiskLevel::High | RiskLevel::Critical))
         .collect();
-
     if !high_risk.is_empty() {
         let names: Vec<&str> = high_risk.iter().map(|e| e.name.as_str()).collect();
         findings.push(Finding::new(
             FindingKind::AutostartExcess,
             Severity::Medium,
-            &format!("{} verdächtige Autostart-Einträge", high_risk.len()),
-            "Einige Autostart-Einträge sind unbekannt oder potenziell unerwünscht.",
+            &lang.pick(format!("{} suspicious autostart entries", high_risk.len()), format!("{} verdächtige Autostart-Einträge", high_risk.len())),
+            &lang.pick(
+                "Some autostart entries match names of unwanted software.",
+                "Einige Autostart-Einträge tragen Namen unerwünschter Software.",
+            ),
             &names.join(", "),
-            "Überprüfe die Autostart-Einträge und deaktiviere nicht benötigte.",
+            &lang.pick("Review them in the Autostart list.", "Prüfe sie in der Autostart-Liste."),
         ));
     }
 
@@ -108,10 +110,16 @@ pub fn detect_autostart_findings() -> Vec<Finding> {
         findings.push(Finding::new(
             FindingKind::AutostartExcess,
             Severity::Low,
-            &format!("{} Autostart-Einträge (viele)", entries.len()),
-            "Sehr viele Autostart-Einträge können den Systemstart verlangsamen.",
+            &lang.pick(format!("{} autostart entries", entries.len()), format!("{} Autostart-Einträge", entries.len())),
+            &lang.pick(
+                "Many autostart entries slow down start-up and keep programs running you rarely use.",
+                "Viele Autostart-Einträge verlangsamen den Start und halten Programme am Laufen, die du selten brauchst.",
+            ),
             "Autostart",
-            "Reduziere die Anzahl der Autostart-Programme auf das Notwendige.",
+            &lang.pick(
+                "Go through the Autostart list and remove what you do not recognise or need.",
+                "Geh die Autostart-Liste durch und entferne, was du nicht kennst oder brauchst.",
+            ),
         ));
     }
 
@@ -127,11 +135,11 @@ fn classify_autostart_risk(name: &str) -> RiskLevel {
     RiskLevel::Unknown
 }
 
-#[allow(dead_code)]
+#[cfg(target_os = "linux")]
 fn is_critical_service(name: &str) -> bool {
     let n = name.to_lowercase();
     matches!(n.as_str(),
         "network.service" | "systemd-resolved.service" | "dbus.service" |
-        "sshd.service" | "cron.service" | "NetworkManager.service"
+        "sshd.service" | "cron.service" | "networkmanager.service"
     )
 }

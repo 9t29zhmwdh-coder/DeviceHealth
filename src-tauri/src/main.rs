@@ -21,6 +21,8 @@ async fn main() {
             commands::analysis::get_findings,
             commands::analysis::get_recommendations,
             commands::analysis::explain_process,
+            commands::analysis::get_autostart,
+            commands::analysis::quit_process,
             commands::analysis::check_ollama,
             commands::analysis::get_last_snapshot,
             commands::hardware::get_hardware,

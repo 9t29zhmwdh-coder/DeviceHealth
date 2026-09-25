@@ -2,34 +2,33 @@ use crate::models::{
     finding::{Finding, FindingKind, Severity},
     hardware::NetworkStat,
     process::ProcessEntry,
+    Lang,
 };
 
-#[allow(dead_code)]
-const KNOWN_TELEMETRY_PROCESSES: &[&str] = &[
-    "CompatTelRunner", "DiagTrack", "dmwappushservice",
-    "analyticspanetool", "coreduetd", "GoogleCrashHandler",
-    "WerFault", "WerFaultSecure",
-];
-
-pub fn detect_network_findings(
-    stats: &[NetworkStat],
-    processes: &[ProcessEntry],
-) -> Vec<Finding> {
+pub fn detect_network_findings(stats: &[NetworkStat], processes: &[ProcessEntry], lang: Lang) -> Vec<Finding> {
     let mut findings = Vec::new();
 
     let telemetry_active: Vec<&ProcessEntry> = processes.iter()
         .filter(|p| p.is_telemetry && p.cpu_usage > 0.1)
         .collect();
-
     if !telemetry_active.is_empty() {
         let names: Vec<&str> = telemetry_active.iter().map(|p| p.name.as_str()).collect();
         findings.push(Finding::new(
             FindingKind::NetworkTelemetry,
             Severity::Low,
-            &format!("{} aktive Telemetrie-Prozesse mit Netzwerkaktivität", telemetry_active.len()),
-            "Einige Prozesse senden aktiv Daten an Drittanbieter-Server.",
+            &lang.pick(
+                format!("{} telemetry process(es) currently active", telemetry_active.len()),
+                format!("{} Telemetrie-Prozess(e) gerade aktiv", telemetry_active.len()),
+            ),
+            &lang.pick(
+                "Known telemetry processes are working right now and may be sending data to their vendor.",
+                "Bekannte Telemetrie-Prozesse arbeiten gerade und senden möglicherweise Daten an den Hersteller.",
+            ),
             &names.join(", "),
-            "Deaktiviere Telemetrie-Dienste in den System-Einstellungen oder blockiere sie per Firewall.",
+            &lang.pick(
+                "Turn off diagnostics in the system settings or block them with a firewall.",
+                "Deaktiviere Diagnosedaten in den Systemeinstellungen oder blockiere sie per Firewall.",
+            ),
         ));
     }
 
@@ -38,27 +37,15 @@ pub fn detect_network_findings(
         findings.push(Finding::new(
             FindingKind::NetworkTelemetry,
             Severity::Low,
-            &format!("{} Netzwerkfehler erkannt", total_errors),
-            "Ungewöhnlich viele Netzwerkfehler auf den Schnittstellen.",
-            "Netzwerkinterface",
-            "Prüfe die Netzwerkverbindung und Router-Konfiguration.",
+            &lang.pick(format!("{total_errors} network errors"), format!("{total_errors} Netzwerkfehler erkannt")),
+            &lang.pick(
+                "Unusually many errors on the network interfaces.",
+                "Ungewöhnlich viele Fehler auf den Netzwerkschnittstellen.",
+            ),
+            &lang.pick("Network interface", "Netzwerkschnittstelle"),
+            &lang.pick("Check the cable or Wi-Fi and the router.", "Prüfe Kabel oder WLAN und den Router."),
         ));
     }
 
     findings
-}
-
-pub fn get_active_connections_text() -> Vec<String> {
-    let cmd = if cfg!(target_os = "windows") {
-        std::process::Command::new("netstat").args(["-n", "-o"]).output()
-    } else if cfg!(target_os = "macos") {
-        std::process::Command::new("netstat").args(["-an"]).output()
-    } else {
-        std::process::Command::new("ss").args(["-tnp"]).output()
-    };
-
-    cmd.ok()
-        .and_then(|o| String::from_utf8(o.stdout).ok())
-        .map(|s| s.lines().map(|l| l.to_string()).collect())
-        .unwrap_or_default()
 }

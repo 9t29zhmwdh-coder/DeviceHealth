@@ -1,12 +1,12 @@
 import { invoke } from '@tauri-apps/api/core'
 import { listen } from '@tauri-apps/api/event'
-import { t } from './i18n'
+import { getLang, t } from './i18n'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
 export type RiskLevel = 'Safe' | 'Low' | 'Medium' | 'High' | 'Critical' | 'Unknown'
 export type ProcessCategory = 'System' | 'Security' | 'Browser' | 'Utility' | 'Telemetry' |
-  'Bloatware' | 'Gaming' | 'Development' | 'Media' | 'Network' | 'Zombie' | 'Unknown'
+  'Bloatware' | 'Gaming' | 'Development' | 'Media' | 'Network' | 'Zombie' | 'Application' | 'Unknown'
 export type Severity = 'Critical' | 'High' | 'Medium' | 'Low' | 'Info'
 export type HealthGrade = 'Excellent' | 'Good' | 'Fair' | 'Poor' | 'Critical'
 
@@ -73,6 +73,11 @@ export interface Recommendation {
   confirmed: boolean
 }
 
+export interface AutostartEntry {
+  id: string; name: string; command: string; location: string
+  risk: RiskLevel; description: string | null; can_disable: boolean
+}
+
 export interface AppSettings {
   ollama_url: string; text_model: string
   auto_scan_on_startup: boolean; scan_interval_minutes: number
@@ -84,12 +89,15 @@ export interface AppSettings {
 // ─── API ────────────────────────────────────────────────────────────────────
 
 export const api = {
-  runAnalysis:        ()                           => invoke<HealthSnapshot>('run_analysis'),
+  // Findings are written in the interface language, so the analysis needs it.
+  runAnalysis:        ()                           => invoke<HealthSnapshot>('run_analysis', { lang: getLang() }),
+  getAutostart:       ()                           => invoke<AutostartEntry[]>('get_autostart'),
+  quitProcess:        (pid: number, name: string)  => invoke<void>('quit_process', { pid, name }),
   getProcesses:       (showSafe: boolean)          => invoke<ProcessEntry[]>('get_processes', { showSafe }),
   getFindings:        ()                           => invoke<Finding[]>('get_findings'),
   getRecommendations: ()                           => invoke<Recommendation[]>('get_recommendations'),
   explainProcess:     (name: string, description: string | null, cpu: number, memoryMb: number) =>
-    invoke<string>('explain_process', { name, description, cpu, memoryMb }),
+    invoke<string>('explain_process', { name, description, cpu, memoryMb, lang: getLang() }),
   checkOllama:        ()                           => invoke<boolean>('check_ollama'),
   getLastSnapshot:    ()                           => invoke<HealthSnapshot | null>('get_last_snapshot'),
   getHardware:        ()                           => invoke<HardwareReport | null>('get_hardware'),

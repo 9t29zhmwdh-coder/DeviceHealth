@@ -3,13 +3,9 @@ use crate::models::process::RiskLevel;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum ActionKind {
+    /// Quit the process whose PID is in `target`, after the person confirms.
     KillProcess,
-    DisableAutostart,
-    RestartSystem,
-    FreeMemory,
-    ClearCache,
-    CheckDisk,
-    OpenSettings,
+    /// Advice only; the app does not act on it.
     NoAction,
 }
 

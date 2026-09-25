@@ -34,24 +34,6 @@ impl HealthGrade {
             _        => Self::Critical,
         }
     }
-    pub fn label(&self) -> &'static str {
-        match self {
-            Self::Excellent => "Ausgezeichnet",
-            Self::Good      => "Gut",
-            Self::Fair      => "Akzeptabel",
-            Self::Poor      => "Schlecht",
-            Self::Critical  => "Kritisch",
-        }
-    }
-    pub fn color(&self) -> &'static str {
-        match self {
-            Self::Excellent => "#3fb950",
-            Self::Good      => "#79c0ff",
-            Self::Fair      => "#d29922",
-            Self::Poor      => "#f0883e",
-            Self::Critical  => "#f85149",
-        }
-    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
