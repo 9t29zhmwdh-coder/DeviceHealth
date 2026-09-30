@@ -668,7 +668,7 @@ dependencies = [
 
 [[package]]
 name = "devicehealth"
-version = "1.4.2"
+version = "1.4.3"
 dependencies = [
  "anyhow",
  "chrono",
@@ -686,7 +686,7 @@ dependencies = [
 
 [[package]]
 name = "dh-cli"
-version = "1.4.2"
+version = "1.4.3"
 dependencies = [
  "anyhow",
  "dh-core",
@@ -696,7 +696,7 @@ dependencies = [
 
 [[package]]
 name = "dh-core"
-version = "1.4.2"
+version = "1.4.3"
 dependencies = [
  "anyhow",
  "chrono",
